@@ -18,9 +18,7 @@ class PartidoController extends Controller
 
     public function __construct(
         SlugService $slugService,
-    )
-
-    {
+    ) {
         $this->slugService = $slugService;
     }
 
@@ -34,15 +32,7 @@ class PartidoController extends Controller
     public function filtrarPartidos(Request $request)
     {
         return Partido::with('user')
-            ->when($request->nombre, function ($query, $nombre) {
-                $query->where('nombre', 'LIKE', '%'.$nombre.'%');
-            })
-            ->when($request->cuantosFaltan, function ($query, $cuantosFaltan) {
-                $query->where('cuantosFaltan', $cuantosFaltan);
-            })
-            ->when($request->tipoDeCancha, function ($query, $tipoDeCancha) {
-                $query->where('tipoDeCancha', $tipoDeCancha);
-            })
+            ->filtrar($request)
             ->where('estado', 'Buscando jugadores')
             ->orderBy('nombre')
             ->paginate(20)
@@ -70,17 +60,11 @@ class PartidoController extends Controller
 
     public function store(StorePartidoRequest $request)
     {
-        $fechaHoraFinalizacion = Carbon::parse($request->fechaHoraFinalizacion)
-            ->format('Y-m-d H:i:s');
-
-        $request->merge([
-            'fechaHoraFinalizacion' => $fechaHoraFinalizacion,
-        ]);
+        $request = $this->cambiarFechaParaGuardarCorrectamente($request);
 
         $partido = new Partido();
         $partido->nombre = $request->nombre;
-        $partido->slug = $this->slugService
-            ->obtenerSlug($request->nombre);
+        $partido->slug = $this->slugService->obtenerSlug($request->nombre);
         $partido->detalles = $request->detalles;
         $partido->fechaHoraFinalizacion = $request->fechaHoraFinalizacion;
         $partido->lugar = $request->lugar;
@@ -104,9 +88,10 @@ class PartidoController extends Controller
         if (Auth::check()) {
             $user_id = Auth::id();
 
-            $presentoPostulacion = Postulacion::where('partido_id', $partido->id)
-                ->where('user_id', $user_id)
-                ->exists();
+            $presentoPostulacion = Postulacion::where(
+                'partido_id', $partido->id
+            )->where('user_id', $user_id)->exists();
+
             if ($presentoPostulacion) {
                 $postulacion = Postulacion::where('partido_id', $partido->id)
                     ->where('user_id', $user_id)
@@ -128,7 +113,7 @@ class PartidoController extends Controller
                 'tipoDeCancha' => $partido->tipoDeCancha,
                 'fechaHoraFinalizacion' => Carbon::parse(
                     $partido->fechaHoraFinalizacion
-                )->format('d/m/y - H:i:s'),
+                )->format('d/m/Y - H:i:s'),
             ],
             'user_id' => $user_id,
             'presentoPostulacion' => $presentoPostulacion,
@@ -154,7 +139,7 @@ class PartidoController extends Controller
                 'tipoDeCancha' => $partido->tipoDeCancha,
                 'fechaHoraFinalizacion' => Carbon::parse(
                     $partido->fechaHoraFinalizacion
-                )->format('d-m-y H:i:s'),
+                )->format('d-m-Y H:i:s'),
             ],
         ]);
     }
@@ -162,6 +147,8 @@ class PartidoController extends Controller
     public function update(Request $request, Partido $partido)
     {
         $this->authorize('update', $partido);
+
+        $request = $this->cambiarFechaParaGuardarCorrectamente($request);
 
         $partido->nombre = $request->nombre;
         $partido->detalles = $request->detalles;
@@ -184,5 +171,18 @@ class PartidoController extends Controller
         $partido->delete();
         return redirect(route('partidos.index'))
             ->with('message', 'Partido eliminado');
+    }
+
+    public function cambiarFechaParaGuardarCorrectamente($request)
+    {
+        $fechaHoraFinalizacion = Carbon::parse(
+            $request->fechaHoraFinalizacion
+        )->format('Y-m-d H:i:s');
+
+        $request->merge([
+            'fechaHoraFinalizacion' => $fechaHoraFinalizacion,
+        ]);
+
+        return $request;
     }
 }

@@ -25968,7 +25968,7 @@ var _hoisted_29 = {
   "class": "mt-10 flex justify-end"
 };
 var _hoisted_30 = {
-  "class": "flex space-x-2"
+  "class": "flex flex-wrap space-x-2"
 };
 var _hoisted_31 = {
   key: 1,
@@ -26170,25 +26170,25 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         onClick: _cache[2] || (_cache[2] = function ($event) {
           return _ctx.verPostulantesAceptados();
         }),
-        "class": "px-2.5 py-2.5 rounded-sm shadow-md bg-pink-600 text-white hover:bg-pink-800 hover:shadow-lg"
+        "class": "px-2.5 py-2.5 my-2 rounded-sm shadow-md bg-pink-600 text-white hover:bg-pink-800 hover:shadow-lg"
       }, " Ver aceptados "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
         type: "button",
         onClick: _cache[3] || (_cache[3] = function ($event) {
           return _ctx.verPostulantes();
         }),
-        "class": "px-2.5 py-2.5 rounded-sm shadow-md bg-blue-600 text-white hover:bg-blue-800 hover:shadow-lg"
+        "class": "px-2.5 py-2.5 my-2 rounded-sm shadow-md bg-blue-600 text-white hover:bg-blue-800 hover:shadow-lg"
       }, " Ver postulantes "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
         type: "button",
         onClick: _cache[4] || (_cache[4] = function ($event) {
           return _ctx.editar();
         }),
-        "class": "px-2.5 py-2.5 rounded-sm shadow-md bg-yellow-400 text-white hover:bg-yellow-500 hover:shadow-lg"
+        "class": "px-2.5 py-2.5 my-2 rounded-sm shadow-md bg-yellow-400 text-white hover:bg-yellow-500 hover:shadow-lg"
       }, " Editar "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
         type: "button",
         onClick: _cache[5] || (_cache[5] = function ($event) {
           return _ctx.eliminar();
         }),
-        "class": "px-2.5 py-2.5 rounded-sm shadow-md bg-red-400 text-white hover:bg-red-500 hover:shadow-lg"
+        "class": "px-2.5 py-2.5 my-2 rounded-sm shadow-md bg-red-400 text-white hover:bg-red-500 hover:shadow-lg"
       }, " Eliminar ")])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Postulaciones "), _ctx.mostrarPostulaciones ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_31, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
         type: "button",
         onClick: _cache[6] || (_cache[6] = function ($event) {

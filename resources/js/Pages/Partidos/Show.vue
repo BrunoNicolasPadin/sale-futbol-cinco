@@ -26,24 +26,24 @@
             </ul>
 
             <div v-if="partido.user_id == user_id" class="mt-10 flex justify-end">
-                <div class="flex space-x-2">
+                <div class="flex flex-wrap space-x-2">
                     <button type="button" @click="verPostulantesAceptados()"
-                        class="px-2.5 py-2.5 rounded-sm shadow-md bg-pink-600 text-white hover:bg-pink-800 hover:shadow-lg">
+                        class="px-2.5 py-2.5 my-2 rounded-sm shadow-md bg-pink-600 text-white hover:bg-pink-800 hover:shadow-lg">
                         Ver aceptados
                     </button>
 
                     <button type="button" @click="verPostulantes()"
-                        class="px-2.5 py-2.5 rounded-sm shadow-md bg-blue-600 text-white hover:bg-blue-800 hover:shadow-lg">
+                        class="px-2.5 py-2.5 my-2 rounded-sm shadow-md bg-blue-600 text-white hover:bg-blue-800 hover:shadow-lg">
                         Ver postulantes
                     </button>
 
                     <button type="button" @click="editar()" 
-                        class="px-2.5 py-2.5 rounded-sm shadow-md bg-yellow-400 text-white hover:bg-yellow-500 hover:shadow-lg">
+                        class="px-2.5 py-2.5 my-2 rounded-sm shadow-md bg-yellow-400 text-white hover:bg-yellow-500 hover:shadow-lg">
                         Editar
                     </button>
 
                     <button type="button" @click="eliminar()" 
-                        class="px-2.5 py-2.5 rounded-sm shadow-md bg-red-400 text-white hover:bg-red-500 hover:shadow-lg">
+                        class="px-2.5 py-2.5 my-2 rounded-sm shadow-md bg-red-400 text-white hover:bg-red-500 hover:shadow-lg">
                         Eliminar
                     </button>
                 </div>

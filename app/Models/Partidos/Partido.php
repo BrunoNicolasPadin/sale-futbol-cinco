@@ -33,4 +33,15 @@ class Partido extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function scopeFiltrar($query, $request)
+    {
+        return $query->when($request->nombre, function ($query, $nombre) {
+            $query->where('nombre', 'LIKE', '%'.$nombre.'%');
+        })->when($request->cuantosFaltan, function ($query, $cuantosFaltan) {
+            $query->where('cuantosFaltan', $cuantosFaltan);
+        })->when($request->tipoDeCancha, function ($query, $tipoDeCancha) {
+            $query->where('tipoDeCancha', $tipoDeCancha);
+        });
+    }
 }
