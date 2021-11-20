@@ -4,7 +4,7 @@
 
         <jet-banner />
 
-        <div class="min-h-screen bg-gray-100">
+        <div class="min-h-screen" style="background-color: rgba(246,248,250,255)">
             <nav class="bg-white border-b border-gray-100">
                 <!-- Primary Navigation Menu -->
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -19,8 +19,8 @@
 
                             <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                                <jet-nav-link :href="route('dashboard')" :active="route().current('dashboard')">
-                                    Dashboard
+                                <jet-nav-link :href="route('partidos.index')" :active="route().current('partidos.index')">
+                                    Partidos
                                 </jet-nav-link>
                             </div>
                         </div>
@@ -142,8 +142,8 @@
                 <!-- Responsive Navigation Menu -->
                 <div :class="{'block': showingNavigationDropdown, 'hidden': ! showingNavigationDropdown}" class="sm:hidden">
                     <div class="pt-2 pb-3 space-y-1">
-                        <jet-responsive-nav-link :href="route('dashboard')" :active="route().current('dashboard')">
-                            Dashboard
+                        <jet-responsive-nav-link :href="route('partidos.index')" :active="route().current('partidos.index')">
+                            Partidos
                         </jet-responsive-nav-link>
                     </div>
 
@@ -219,13 +219,20 @@
             <!-- Page Heading -->
             <header class="bg-white shadow" v-if="$slots.header">
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    <slot name="header"></slot>
+                    <h2 class="font-semibold text-sm text-gray-800 leading-tight">
+                        <slot name="header"></slot>
+                    </h2>
                 </div>
             </header>
 
             <!-- Page Content -->
             <main>
-                <slot></slot>
+                <div class="py-6">
+                    <div class="max-w-7xl mx-auto px-4 md:px-8">
+                        <flash-messages />
+                        <slot></slot>
+                    </div>
+                </div>
             </main>
         </div>
     </div>
@@ -240,6 +247,7 @@
     import JetNavLink from '@/Jetstream/NavLink.vue'
     import JetResponsiveNavLink from '@/Jetstream/ResponsiveNavLink.vue'
     import { Head, Link } from '@inertiajs/inertia-vue3';
+    import FlashMessages from '@/Shared/Messages/FlashMessages.vue'
 
     export default defineComponent({
         props: {
@@ -255,6 +263,7 @@
             JetNavLink,
             JetResponsiveNavLink,
             Link,
+            FlashMessages,
         },
 
         data() {

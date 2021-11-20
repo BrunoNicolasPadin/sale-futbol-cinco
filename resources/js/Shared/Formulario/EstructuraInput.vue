@@ -5,7 +5,7 @@
             <template #label-contenido>{{ nombreLabel }}</template>
         </label-componente>
 
-        <div class="bg-white my-2 flex svelte-1l8159u">
+        <div class="bg-white my-2 flex svelte-1l8159u shadow-md rounded-lg">
             <slot name="inputComponente"></slot>
         </div>
 
