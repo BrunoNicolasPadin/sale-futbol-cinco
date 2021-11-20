@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Partidos\Partido;
+use App\Models\Postulaciones\Postulacion;
+use App\Observers\Partidos\PartidoObserver;
+use App\Observers\Postulaciones\PostulacionObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -27,6 +31,7 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Partido::observe(PartidoObserver::class);
+        Postulacion::observe(PostulacionObserver::class);
     }
 }

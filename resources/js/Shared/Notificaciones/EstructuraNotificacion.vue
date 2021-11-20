@@ -21,10 +21,7 @@
 
         methods: {
             marcarComoLeido() {
-                axios.get(this.route('notificaciones.marcarComoLeida', this.notificacion_id))
-                .catch(e => {
-                    alert('Ocurrió un error pero no es tu culpa. Mejor inténtalo mas tarde.');
-                })
+                this.$inertia.get(this.route('notificaciones.marcarComoLeida', this.notificacion_id))
             },
         }
     }

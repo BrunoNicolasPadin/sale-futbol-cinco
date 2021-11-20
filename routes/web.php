@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\Notificaciones\NotificacionController;
 use App\Http\Controllers\Partidos\PartidoController;
+use App\Http\Controllers\Postulaciones\PostulacionController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -34,3 +36,26 @@ Route::resource('partidos', PartidoController::class);
 //Buscador de partidos
 Route::post('partidos/filtrar', [PartidoController::class, 'filtrarPartidos'])
     ->name('partidos.filtrarPartidos');
+
+Route::prefix('partidos/{partido:slug}')->group(function () {
+    //Postulaciones
+    Route::resource('postulaciones', PostulacionController::class)
+        ->except(['create', 'edit']);
+
+        Route::get('postulaciones-aceptados', [PostulacionController::class, 'obtenerPostulantesAceptados'])
+        ->name('postulaciones.aceptados');
+    
+    //Buscador de postulaciones
+    /* Route::post('postulaciones/filtrar', [PostulacionController::class, 'filtrarPostulaciones'])
+        ->name('postulaciones.filtrarPostulaciones'); */
+});
+
+//Notificaciones
+Route::get('notificaciones', [NotificacionController::class, 'listar'])->name('notificaciones.listar');
+Route::get('notificaciones/contar', [NotificacionController::class, 'contarNotificacionesSinLeer'])
+    ->name('notificaciones.contarNotificacionesSinLeer');
+Route::get('notificaciones/{notificacion_id}/marcar-como-leida', [NotificacionController::class, 'marcarComoLeida'])
+    ->name('notificaciones.marcarComoLeida');
+Route::get('notificaciones/marcar-todas-como-leidas', [NotificacionController::class, 'marcarTodasComoLeidas'])
+    ->name('notificaciones.marcarTodasComoLeidas');
+

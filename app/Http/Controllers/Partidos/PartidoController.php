@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Partidos;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Partidos\StorePartidoRequest;
 use App\Models\Partidos\Partido;
+use App\Models\Postulaciones\Postulacion;
 use App\Services\Slugs\SlugService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -69,13 +70,17 @@ class PartidoController extends Controller
 
     public function store(StorePartidoRequest $request)
     {
-        $fechaHoraFinalizacion = Carbon::parse($request->fechaHoraFinalizacion)->format('Y-m-d H:i:s');
+        $fechaHoraFinalizacion = Carbon::parse($request->fechaHoraFinalizacion)
+            ->format('Y-m-d H:i:s');
 
-        $request->merge(['fechaHoraFinalizacion' => $fechaHoraFinalizacion]);
+        $request->merge([
+            'fechaHoraFinalizacion' => $fechaHoraFinalizacion,
+        ]);
 
         $partido = new Partido();
         $partido->nombre = $request->nombre;
-        $partido->slug = $this->slugService->obtenerSlug($request->nombre);
+        $partido->slug = $this->slugService
+            ->obtenerSlug($request->nombre);
         $partido->detalles = $request->detalles;
         $partido->fechaHoraFinalizacion = $request->fechaHoraFinalizacion;
         $partido->lugar = $request->lugar;
@@ -93,8 +98,20 @@ class PartidoController extends Controller
     public function show(Partido $partido)
     {
         $user_id = null;
+        $presentoPostulacion = null;
+        $postulacion = null;
+
         if (Auth::check()) {
             $user_id = Auth::id();
+
+            $presentoPostulacion = Postulacion::where('partido_id', $partido->id)
+                ->where('user_id', $user_id)
+                ->exists();
+            if ($presentoPostulacion) {
+                $postulacion = Postulacion::where('partido_id', $partido->id)
+                    ->where('user_id', $user_id)
+                    ->first();
+            }
         }
 
         return Inertia::render('Partidos/Show', [
@@ -112,9 +129,10 @@ class PartidoController extends Controller
                 'fechaHoraFinalizacion' => Carbon::parse(
                     $partido->fechaHoraFinalizacion
                 )->format('d/m/y - H:i:s'),
-                'user_id' => $user_id,
             ],
-            'user_id' => Auth::id(),
+            'user_id' => $user_id,
+            'presentoPostulacion' => $presentoPostulacion,
+            'postulacion' => $postulacion,
         ]);
     }
 
@@ -142,7 +160,6 @@ class PartidoController extends Controller
     public function update(Request $request, Partido $partido)
     {
         $partido->nombre = $request->nombre;
-        $partido->slug = $this->slugService->obtenerSlug($request->nombre);
         $partido->detalles = $request->detalles;
         $partido->fechaHoraFinalizacion = $request->fechaHoraFinalizacion;
         $partido->lugar = $request->lugar;

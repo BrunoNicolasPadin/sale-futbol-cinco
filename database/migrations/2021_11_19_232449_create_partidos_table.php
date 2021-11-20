@@ -15,9 +15,9 @@ class CreatePartidosTable extends Migration
     {
         Schema::create('partidos', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignId('user_id')->constrained('users')->index()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained('users')->index()->onDelete('cascade');
             $table->string('nombre');
-            $table->string('slug');
+            $table->string('slug')->index();
             $table->text('detalles')->nullable();
             $table->dateTime('fechaHoraFinalizacion');
             $table->string('lugar');
