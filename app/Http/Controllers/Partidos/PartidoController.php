@@ -138,6 +138,8 @@ class PartidoController extends Controller
 
     public function edit(Partido $partido)
     {
+        $this->authorize('update', $partido);
+
         return Inertia::render('Partidos/Edit', [
             'partido' => [
                 'id' => $partido->id,
@@ -159,6 +161,8 @@ class PartidoController extends Controller
 
     public function update(Request $request, Partido $partido)
     {
+        $this->authorize('update', $partido);
+
         $partido->nombre = $request->nombre;
         $partido->detalles = $request->detalles;
         $partido->fechaHoraFinalizacion = $request->fechaHoraFinalizacion;
@@ -175,6 +179,8 @@ class PartidoController extends Controller
 
     public function destroy(Partido $partido)
     {
+        $this->authorize('delete', $partido);
+
         $partido->delete();
         return redirect(route('partidos.index'))
             ->with('message', 'Partido eliminado');
