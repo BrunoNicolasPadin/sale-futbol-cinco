@@ -15,8 +15,9 @@ class PostulacionController extends Controller
         $this->middleware('auth');
     }
 
-    public function index(Request $request, Partido $partido)
+    public function index(Request $request, $slug)
     {
+        $partido = Partido::where('slug', $slug)->first();
         $this->authorize('viewAny', [Postulacion::class, $partido]);
 
         return Postulacion::where('partido_id', $partido->id)
@@ -26,8 +27,9 @@ class PostulacionController extends Controller
             ->paginate(10);
     }
 
-    public function obtenerPostulantesAceptados(Partido $partido)
+    public function obtenerPostulantesAceptados($slug)
     {
+        $partido = Partido::where('slug', $slug)->first();
         $this->authorize('verAceptados', [Postulacion::class, $partido]);
 
         return Postulacion::where('partido_id', $partido->id)
@@ -36,8 +38,9 @@ class PostulacionController extends Controller
             ->get();
     }
 
-    public function store(Request $request, Partido $partido)
+    public function store(Request $request, $slug)
     {
+        $partido = Partido::where('slug', $slug)->first();
         $this->authorize('create', [Postulacion::class, $partido]);
 
         $postulacion = new Postulacion();
@@ -46,7 +49,8 @@ class PostulacionController extends Controller
         $postulacion->partido()->associate($partido->id);
         $postulacion->save();
 
-        return back()->with('message', 'Postulación enviada');
+        return redirect(route('partidos.show', $slug))
+            ->with('message', 'Tu postulación fue cargada');
     }
 
     public function update(
@@ -54,12 +58,13 @@ class PostulacionController extends Controller
         Partido $partido,
         Postulacion $postulacione
     ) {
-        $this->authorize('update', [$partido, $postulacione]);
+        $this->authorize('update', $partido);
 
         $postulacione->estado = $request->estado;
         $postulacione->save();
 
-        return back()->with('message', 'Postulación actualizada');
+        return redirect(route('partidos.show', $partido->slug))
+            ->with('message', 'Postulación actualizada');
     }
 
     public function destroy(
@@ -70,6 +75,7 @@ class PostulacionController extends Controller
 
         $postulacione->delete();
 
-        return back()->with('message', 'Tu postulación fue retirada');
+        return redirect(route('partidos.show', $partido->slug))
+            ->with('message', 'Tu postulación fue retirada');
     }
 }

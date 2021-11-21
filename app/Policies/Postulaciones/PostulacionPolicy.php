@@ -32,8 +32,7 @@ class PostulacionPolicy
         if ($user->id === $partido->user_id) {
             return false;
         }
-        if (Partido::where('estado', 'Buscando jugadores')
-            ->findOrFail($partido->id)->exists()) {
+        if ($partido->estado === 'Buscando jugadores') {
             return true;
         }
         return false;
@@ -41,16 +40,12 @@ class PostulacionPolicy
 
     public function update(
         User $user,
-        Partido $partido,
-        Postulacion $postulacion
+        Partido $partido
     ) {
         if ($user->id === $partido->user_id) {
             return true;
         }
-        return $this->verificarOrganizadorPostulador(
-            $user,
-            $postulacion
-        );
+        return false;
     }
 
     public function delete(User $user, Postulacion $postulacion)
