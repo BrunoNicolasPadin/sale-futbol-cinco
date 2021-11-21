@@ -131,8 +131,9 @@ class PartidoController extends Controller
         ]);
     }
 
-    public function edit(Partido $partido)
+    public function edit($slug)
     {
+        $partido = Partido::where('slug', $slug)->first();
         $this->authorize('update', $partido);
 
         return Inertia::render('Partidos/Edit', [
@@ -176,8 +177,9 @@ class PartidoController extends Controller
             ->with('message', 'Partido actualizado');
     }
 
-    public function destroy(Partido $partido)
+    public function destroy($slug)
     {
+        $partido = Partido::where('slug', $slug)->first();
         $this->authorize('delete', $partido);
 
         $partido->delete();
