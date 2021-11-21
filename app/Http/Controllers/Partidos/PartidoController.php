@@ -20,6 +20,11 @@ class PartidoController extends Controller
         SlugService $slugService,
     ) {
         $this->slugService = $slugService;
+        $this->middleware('auth')->except(
+            'index',
+            'show',
+            'filtrarPartidos'
+        );
     }
 
     public function index(Request $request)
@@ -60,11 +65,15 @@ class PartidoController extends Controller
 
     public function store(StorePartidoRequest $request)
     {
-        $request = $this->cambiarFechaParaGuardarCorrectamente($request);
+        $request = $this->cambiarFechaParaGuardarCorrectamente(
+            $request
+        );
 
         $partido = new Partido();
         $partido->nombre = $request->nombre;
-        $partido->slug = $this->slugService->obtenerSlug($request->nombre);
+        $partido->slug = $this->slugService->obtenerSlug(
+            $request->nombre
+        );
         $partido->detalles = $request->detalles;
         $partido->fechaHoraFinalizacion = $request->fechaHoraFinalizacion;
         $partido->lugar = $request->lugar;
@@ -93,9 +102,10 @@ class PartidoController extends Controller
             )->where('user_id', $user_id)->exists();
 
             if ($presentoPostulacion) {
-                $postulacion = Postulacion::where('partido_id', $partido->id)
-                    ->where('user_id', $user_id)
-                    ->first();
+                $postulacion = Postulacion::where(
+                    'partido_id',
+                    $partido->id
+                )->where('user_id', $user_id)->first();
             }
         }
 
@@ -148,7 +158,9 @@ class PartidoController extends Controller
     {
         $this->authorize('update', $partido);
 
-        $request = $this->cambiarFechaParaGuardarCorrectamente($request);
+        $request = $this->cambiarFechaParaGuardarCorrectamente(
+            $request
+        );
 
         $partido->nombre = $request->nombre;
         $partido->detalles = $request->detalles;

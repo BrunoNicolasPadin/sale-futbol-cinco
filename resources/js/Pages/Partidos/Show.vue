@@ -13,12 +13,12 @@
                 <li class="my-2">Detalles: <p class="font-bold text-blue-900 whitespace-pre-line">{{ partido.detalles }}</p></li>
                 <li v-if="presentoPostulacion" class="my-2">Tu estado: <span class="font-bold text-blue-900">{{ postulacion.estado }}</span></li>
                 <li v-if="partido.user_id != user_id && user_id != null " class="my-2">
-                    <button v-if="presentoPostulacion == false " type="button" @click="quieroJugar()"
+                    <button v-if="presentoPostulacion == false && partido.estado == 'Buscando jugadores' " type="button" @click="quieroJugar()"
                         class="px-2.5 py-2.5 rounded-sm shadow-md bg-blue-600 text-white hover:bg-blue-800 hover:shadow-lg">
                         Quiero jugar
                     </button>
 
-                    <button v-else type="button" @click="noQuieroJugar()"
+                    <button v-else-if="presentoPostulacion == true" type="button" @click="noQuieroJugar()"
                         class="px-2.5 py-2.5 rounded-sm shadow-md bg-red-600 text-white hover:bg-red-800 hover:shadow-lg">
                         No quiero jugar
                     </button>
@@ -219,11 +219,15 @@
             },
 
             quieroJugar() {
-                this.$inertia.post(this.route('postulaciones.store', this.partido.id))
+                if (confirm('¿Estás seguro de que deseas querer jugar este partido?')) {
+                    this.$inertia.post(this.route('postulaciones.store', this.partido.slug))
+                }
             },
 
             noQuieroJugar() {
-                this.$inertia.delete(this.route('postulaciones.destroy', [this.partido.id, this.postulacion.id]))
+                if (confirm('¿Estás seguro de que deseas eliminar tu postulación?')) {
+                    this.$inertia.delete(this.route('postulaciones.destroy', [this.partido.slug, this.postulacion.id]))
+                }
             },
 
             openModal: function () {
@@ -258,13 +262,17 @@
             },
 
             actualizarPostulacion(postulacion_id, estado) {
+                var mensaje = null
                 if (estado == 'Esperando respuesta') {
                     this.formActualizarPostulacion.estado = 'Aceptado'
+                    mensaje = 'aceptar'
                 } else {
                     this.formActualizarPostulacion.estado = 'Esperando respuesta'
+                    mensaje = 'dejar en espera'
                 }
-
-                this.$inertia.put(this.route('postulaciones.update', [this.partido.slug, postulacion_id]), this.formActualizarPostulacion)
+                if (confirm('¿Estás seguro de que deseas '+ mensaje +' este jugador?')) {
+                    this.$inertia.put(this.route('postulaciones.update', [this.partido.slug, postulacion_id]), this.formActualizarPostulacion)
+                }
             },
 
             verPostulantesAceptados() {

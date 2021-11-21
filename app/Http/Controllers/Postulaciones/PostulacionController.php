@@ -7,12 +7,18 @@ use App\Models\Partidos\Partido;
 use App\Models\Postulaciones\Postulacion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Inertia\Inertia;
 
 class PostulacionController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index(Request $request, Partido $partido)
     {
+        $this->authorize('viewAny', [Postulacion::class, $partido]);
+
         return Postulacion::where('partido_id', $partido->id)
             ->where('estado', 'Esperando respuesta')
             ->with('user:id,name')
@@ -22,38 +28,46 @@ class PostulacionController extends Controller
 
     public function obtenerPostulantesAceptados(Partido $partido)
     {
+        $this->authorize('verAceptados', [Postulacion::class, $partido]);
+
         return Postulacion::where('partido_id', $partido->id)
             ->where('estado', 'Aceptado')
             ->with('user')
             ->get();
     }
 
-    public function store(Request $request, $partido_id)
+    public function store(Request $request, Partido $partido)
     {
+        $this->authorize('create', [Postulacion::class, $partido]);
+
         $postulacion = new Postulacion();
         $postulacion->estado = 'Esperando respuesta';
         $postulacion->user()->associate(Auth::id());
-        $postulacion->partido()->associate($partido_id);
+        $postulacion->partido()->associate($partido->id);
         $postulacion->save();
 
         return back()->with('message', 'Postulación enviada');
     }
 
-    public function update(Request $request, Partido $partido, Postulacion $postulacione)
-    {
+    public function update(
+        Request $request,
+        Partido $partido,
+        Postulacion $postulacione
+    ) {
+        $this->authorize('update', [$partido, $postulacione]);
+
         $postulacione->estado = $request->estado;
         $postulacione->save();
 
         return back()->with('message', 'Postulación actualizada');
     }
 
-    public function show($partido_id, Postulacion $postulacione)
-    {
-        //
-    }
+    public function destroy(
+        Partido $partido,
+        Postulacion $postulacione
+    ) {
+        $this->authorize('delete', $postulacione);
 
-    public function destroy($partido_id, Postulacion $postulacione)
-    {
         $postulacione->delete();
 
         return back()->with('message', 'Tu postulación fue retirada');

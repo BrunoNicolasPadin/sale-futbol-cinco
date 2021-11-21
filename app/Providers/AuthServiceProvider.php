@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Models\Partidos\Partido;
+use App\Models\Postulaciones\Postulacion;
 use App\Policies\Partidos\PartidoPolicy;
+use App\Policies\Postulaciones\PostulacionPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -17,6 +19,7 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         // 'App\Models\Model' => 'App\Policies\ModelPolicy',
         Partido::class => PartidoPolicy::class,
+        Postulacion::class => PostulacionPolicy::class,
     ];
 
     /**
