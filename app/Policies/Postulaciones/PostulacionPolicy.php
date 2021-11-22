@@ -27,6 +27,17 @@ class PostulacionPolicy
         );
     }
 
+    public function view(User $user, Postulacion $postulacion, Partido $partido)
+    {
+        if ($user->id === $partido->user_id) {
+            return true;
+        }
+        if ($user->id === $postulacion->user_id) {
+            return true;
+        }
+        return false;
+    }
+
     public function create(User $user, Partido $partido)
     {
         if ($user->id === $partido->user_id) {
@@ -53,6 +64,26 @@ class PostulacionPolicy
         return $this->verificarOrganizadorPostulador(
             $user,
             $postulacion
+        );
+    }
+
+    public function calificarPostulacion(
+        User $user,
+        Partido $partido
+    ) {
+        return $this->verificarOrganizadorPostulador(
+            $user,
+            $partido
+        );
+    }
+
+    public function eliminarCalificacion(
+        User $user,
+        Partido $partido
+    ) {
+        return $this->verificarOrganizadorPostulador(
+            $user,
+            $partido
         );
     }
 

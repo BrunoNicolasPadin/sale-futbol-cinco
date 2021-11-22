@@ -53,15 +53,6 @@ class PostulacionController extends Controller
             ->with('message', 'Tu postulación fue cargada');
     }
 
-    public function show(Partido $partido, $id)
-    {
-        return Inertia::render('Postulaciones/Show', [
-            'partido' => $partido,
-            'postulacion' => Postulacion::with('user')->findOrFail($id),
-            'user_id' => Auth::id(),
-        ]);
-    }
-
     public function update(
         Request $request,
         Partido $partido,
@@ -88,30 +79,60 @@ class PostulacionController extends Controller
             ->with('message', 'Tu postulación fue retirada');
     }
 
+    //Mostrar la postulación de un solo jugador para calificarla
+    //o solo ver su calificación
+    public function show(Partido $partido, $id)
+    {
+        $postulacion = Postulacion::with('user')
+            ->findOrFail($id);
+
+        $this->authorize('view', [$postulacion, $partido]);
+
+        return Inertia::render('Postulaciones/Show', [
+            'partido' => $partido,
+            'postulacion' => $postulacion,
+            'user_id' => Auth::id(),
+        ]);
+    }
+
     public function calificarPostulacion(
         CalificacionRequest $request,
         Partido $partido,
         $id
     ) {
+        $this->authorize('calificarPostulacion', [
+            Postulacion::class,
+            $partido,
+        ]);
+
         $postulacion = Postulacion::findOrFail($id);
         $postulacion->puntaje = $request->puntaje;
         $postulacion->comentario = $request->comentario;
         $postulacion->save();
 
-        return redirect(route('postulaciones.show', [$partido->slug, $postulacion->id]))
-            ->with('message', 'Calificación enviada');
+        return redirect(route('postulaciones.show', [
+            $partido->slug,
+            $postulacion->id
+        ]))->with('message', 'Calificación enviada');
     }
 
     public function eliminarCalificacion(
         Partido $partido,
         $id
     ) {
+        $this->authorize('eliminarCalificacion', [
+            Postulacion::class,
+            $partido,
+        ]);
+
         $postulacion = Postulacion::findOrFail($id);
         $postulacion->puntaje = null;
         $postulacion->comentario = null;
         $postulacion->save();
 
-        return redirect(route('postulaciones.show', [$partido->slug, $postulacion->id]))
-            ->with('message', 'Calificación eliminada');
+        return redirect(route('postulaciones.show', [
+            $partido->slug,
+            $postulacion->id,
+        ]))->with('message', 'Calificación eliminada');
     }
 }
