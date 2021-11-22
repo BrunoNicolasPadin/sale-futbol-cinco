@@ -3,16 +3,23 @@
 namespace App\Http\Controllers\Postulaciones;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Postulaciones\CalificacionRequest;
 use App\Models\Partidos\Partido;
 use App\Models\Postulaciones\Postulacion;
+use App\Services\Calificaciones\CalificacionPostulacionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class PostulacionController extends Controller
 {
-    public function __construct()
-    {
+    protected $calificacionPostulacionService;
+
+    public function __construct(
+        CalificacionPostulacionService $calificacionPostulacionService
+    ) {
         $this->middleware('auth');
+        $this->calificacionPostulacionService = $calificacionPostulacionService;
     }
 
     public function index(Request $request, $slug)
@@ -20,11 +27,7 @@ class PostulacionController extends Controller
         $partido = Partido::where('slug', $slug)->first();
         $this->authorize('viewAny', [Postulacion::class, $partido]);
 
-        return Postulacion::where('partido_id', $partido->id)
-            ->where('estado', 'Esperando respuesta')
-            ->with('user:id,name')
-            ->orderBy('created_at', 'ASC')
-            ->paginate(10);
+        return $this->calificacionPostulacionService->obtenerCalificaciones($partido->id, 'Esperando respuesta');
     }
 
     public function obtenerPostulantesAceptados($slug)
@@ -32,10 +35,7 @@ class PostulacionController extends Controller
         $partido = Partido::where('slug', $slug)->first();
         $this->authorize('verAceptados', [Postulacion::class, $partido]);
 
-        return Postulacion::where('partido_id', $partido->id)
-            ->where('estado', 'Aceptado')
-            ->with('user')
-            ->get();
+        return $this->calificacionPostulacionService->obtenerCalificaciones($partido->id, 'Aceptado');
     }
 
     public function store(Request $request, $slug)
@@ -51,6 +51,15 @@ class PostulacionController extends Controller
 
         return redirect(route('partidos.show', $slug))
             ->with('message', 'Tu postulación fue cargada');
+    }
+
+    public function show(Partido $partido, $id)
+    {
+        return Inertia::render('Postulaciones/Show', [
+            'partido' => $partido,
+            'postulacion' => Postulacion::with('user')->findOrFail($id),
+            'user_id' => Auth::id(),
+        ]);
     }
 
     public function update(
@@ -77,5 +86,32 @@ class PostulacionController extends Controller
 
         return redirect(route('partidos.show', $partido->slug))
             ->with('message', 'Tu postulación fue retirada');
+    }
+
+    public function calificarPostulacion(
+        CalificacionRequest $request,
+        Partido $partido,
+        $id
+    ) {
+        $postulacion = Postulacion::findOrFail($id);
+        $postulacion->puntaje = $request->puntaje;
+        $postulacion->comentario = $request->comentario;
+        $postulacion->save();
+
+        return redirect(route('postulaciones.show', [$partido->slug, $postulacion->id]))
+            ->with('message', 'Calificación enviada');
+    }
+
+    public function eliminarCalificacion(
+        Partido $partido,
+        $id
+    ) {
+        $postulacion = Postulacion::findOrFail($id);
+        $postulacion->puntaje = null;
+        $postulacion->comentario = null;
+        $postulacion->save();
+
+        return redirect(route('postulaciones.show', [$partido->slug, $postulacion->id]))
+            ->with('message', 'Calificación eliminada');
     }
 }

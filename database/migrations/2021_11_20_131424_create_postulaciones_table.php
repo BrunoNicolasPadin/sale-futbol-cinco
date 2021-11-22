@@ -18,6 +18,8 @@ class CreatePostulacionesTable extends Migration
             $table->foreignId('user_id')->index()->constrained('users')->onDelete('cascade');
             $table->foreignUuid('partido_id')->index()->constrained('partidos')->onDelete('cascade');
             $table->string('estado');
+            $table->integer('puntaje', 1)->nullable();
+            $table->text('comentario')->nullable();
             $table->timestamps();
         });
     }

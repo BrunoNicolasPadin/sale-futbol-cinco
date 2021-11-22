@@ -17,6 +17,8 @@ class Postulacion extends Model
 
     protected $fillable = [
         'estado',
+        'puntaje',
+        'comentario',
     ];
 
     public function user()

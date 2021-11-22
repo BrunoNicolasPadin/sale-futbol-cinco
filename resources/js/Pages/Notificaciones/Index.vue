@@ -18,6 +18,16 @@
                         {{ notificacion.data.partido.nombre }}
                     </Link>" porque el organizador ha finalizado su búsqueda
                 </span>
+
+                <span v-if="notificacion.type == 'App\\Notifications\\Postulaciones\\PostulacionCalificada' ">
+                    Nueva actualización en su <Link :href="route('postulaciones.show', [notificacion.data.postulacion.partido.slug, notificacion.data.postulacion.id])" 
+                        class="underline">
+                        calificación</Link> para el partido
+                    "<Link :href="route('partidos.show', notificacion.data.postulacion.partido.slug)" 
+                        class="underline">
+                        {{ notificacion.data.postulacion.partido.nombre }}
+                    </Link>"
+                </span>
             </template>
         </estructura-notificacion>
     </app-layout>

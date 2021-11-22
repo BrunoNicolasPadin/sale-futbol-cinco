@@ -92,24 +92,24 @@
                     </div>
                 </div>
 
-                <div v-for="postulacion in postulacionesFiltradas.data" :key="postulacion.id">
+                <div v-for="postulacion in postulaciones" :key="postulacion.id">
                     <div class="my-3 bg-white shadow-md rounded-md p-4">
                         <div class="text-sm grid grid-cols-2">
-                            <div class="flex space-x-2">
-                                <span class="font-semibold text-green-800">
-                                    43 partidos jugados
+                            <div class="flex space-x-2 font-semibold text-green-800">
+                                <span>
+                                    {{ postulacion.partidos }} partidos
                                 </span>
                                 <span>
                                     -
                                 </span>
                                 <span>
-                                    4.2/5
+                                    Puntaje promedio: {{ postulacion.puntaje }}/10
                                 </span>
                             </div>
                         </div>
                         
                         <h1 class="text-3xl font-black mt-3">
-                            {{ postulacion.user.name }}
+                            {{ postulacion.nombre }}
                         </h1>
 
                         <div class="flex justify-end">
@@ -122,13 +122,6 @@
 
                     <hr class="bg-gray-200 p-px">
                 </div>
-                
-                <!-- Paginador -->
-                <div class="flex flex-wrap my-3">
-                    <template v-for="(link, index, key) in postulacionesFiltradas.links" :key="key">
-                        <button @click="otraPagina(link.label)" class="mr-1 mb-1 px-4 py-3 text-sm leading-4 border rounded hover:bg-white focus:border-indigo-500 focus:text-indigo-500" :class="{ 'bg-white': link.active }" v-html="link.label" />
-                    </template>
-                </div>
             </div>
 
             <!-- Postulantes aceptados -->
@@ -136,24 +129,29 @@
                 <div v-for="postulanteAceptado in postulantesAceptados" :key="postulanteAceptado.id">
                     <div class="my-3 bg-white shadow-md rounded-md p-4">
                         <div class="text-sm grid grid-cols-2">
-                            <div class="flex space-x-2">
-                                <span class="font-semibold text-green-800">
-                                    43 partidos jugados
+                            <div class="flex space-x-2 font-semibold text-green-800">
+                                <span>
+                                    {{ postulanteAceptado.partidos }} partidos
                                 </span>
                                 <span>
                                     -
                                 </span>
                                 <span>
-                                    4.2/5
+                                    Puntaje promedio: {{ postulanteAceptado.puntaje }}/10
                                 </span>
                             </div>
                         </div>
                         
                         <h1 class="text-3xl font-black mt-3">
-                            {{ postulanteAceptado.user.name }}
+                            {{ postulanteAceptado.nombre }}
                         </h1>
 
-                        <div v-if="partido.user_id == user_id" class="flex justify-end">
+                        <div v-if="partido.user_id == user_id" class="flex space-x-2 justify-end">
+                            <button type="button" @click="calificarPostulacion(postulanteAceptado.id)"
+                                class="px-2.5 py-2.5 rounded-sm shadow-md bg-indigo-600 text-white hover:bg-indigo-800 hover:shadow-lg">
+                                Calificar
+                            </button>
+
                             <button type="button" @click="actualizarPostulacion(postulanteAceptado.id, 'Aceptado')"
                                 class="px-2.5 py-2.5 rounded-sm shadow-md bg-green-600 text-white hover:bg-green-800 hover:shadow-lg">
                                 Dejarlo en espera
@@ -193,7 +191,6 @@
         data() {
             return {
                 isOpen: false,
-                postulacionesFiltradas: null,
                 formBuscador: {
                     page: 1,
                     calificacion: null,
@@ -241,20 +238,9 @@
                 this.formBuscador.page = 1
                 axios.get(this.route('postulaciones.index', this.partido.slug), this.formBuscador)
                 .then(response => {
-                    this.postulacionesFiltradas = response.data
+                    this.postulaciones = response.data
                     this.mostrarPostulantesAceptados = false
                     this.mostrarPostulaciones = true
-                })
-                .catch(e => {
-                    alert('Ocurrió un error pero no es tu culpa. Mejor inténtalo mas tarde.');
-                })
-            },
-
-            otraPagina(index) {
-                this.formBuscador.page = index
-                axios.get(this.route('postulaciones.index', this.partido.slug), this.formBuscador)
-                .then(response => {
-                    this.postulacionesFiltradas = response.data
                 })
                 .catch(e => {
                     alert('Ocurrió un error pero no es tu culpa. Mejor inténtalo mas tarde.');
@@ -286,6 +272,10 @@
                     alert('Ocurrió un error pero no es tu culpa. Mejor inténtalo mas tarde.');
                 })
             },
+
+            calificarPostulacion(postulanteAceptado_id) {
+                this.$inertia.get(this.route('postulaciones.show', [this.partido.slug, postulanteAceptado_id]))
+            }
         }
     })
 </script>

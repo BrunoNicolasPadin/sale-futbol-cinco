@@ -43,7 +43,14 @@ Route::prefix('partidos/{partido:slug}')->group(function () {
         ->except(['create', 'edit']);
 
         Route::get('postulaciones-aceptados', [PostulacionController::class, 'obtenerPostulantesAceptados'])
-        ->name('postulaciones.aceptados');
+            ->name('postulaciones.aceptados');
+        
+        Route::put('postulaciones/{postulacion_id}/calificar', [PostulacionController::class, 'calificarPostulacion'])
+            ->name('postulaciones.calificar');
+        Route::put('postulaciones/{postulacion_id}/actualizar-calificacion', [PostulacionController::class, 'actualizarCalificacion'])
+            ->name('postulaciones.actualizarCalificacion');
+        Route::delete('postulaciones/{postulacion_id}/eliminar-calificacion', [PostulacionController::class, 'eliminarCalificacion'])
+            ->name('postulaciones.eliminarCalificacion');
     
     //Buscador de postulaciones
     /* Route::post('postulaciones/filtrar', [PostulacionController::class, 'filtrarPostulaciones'])
