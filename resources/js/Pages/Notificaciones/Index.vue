@@ -28,6 +28,14 @@
                         {{ notificacion.data.postulacion.partido.nombre }}
                     </Link>"
                 </span>
+
+                <span v-if="notificacion.type == 'App\\Notifications\\Partidos\\PartidoCalificado' ">
+                    Nueva calificación en el partido 
+                    "<Link :href="route('calificaciones.index', notificacion.data.partido.slug)" 
+                        class="underline">
+                        {{ notificacion.data.partido.nombre }}
+                    </Link>"
+                </span>
             </template>
         </estructura-notificacion>
     </app-layout>

@@ -7,6 +7,8 @@ use App\Http\Requests\Postulaciones\CalificacionRequest;
 use App\Models\Partidos\CalificacionPartido;
 use App\Models\Partidos\Partido;
 use App\Models\Postulaciones\Postulacion;
+use App\Models\User;
+use App\Notifications\Partidos\PartidoCalificado;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
@@ -53,6 +55,9 @@ class CalificacionPartidoController extends Controller
         $calificacionPartido->puntaje = $request->puntaje;
         $calificacionPartido->comentario = $request->comentario;
         $calificacionPartido->save();
+
+        $user = User::findOrFail($partido->user_id);
+        $user->notify(new PartidoCalificado($partido));
 
         return redirect(route('calificaciones.index', $partido->slug))
             ->with('message', 'Calificación enviada');
