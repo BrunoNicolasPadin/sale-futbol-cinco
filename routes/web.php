@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Notificaciones\NotificacionController;
+use App\Http\Controllers\Partidos\CalificacionPartidoController;
 use App\Http\Controllers\Partidos\PartidoController;
 use App\Http\Controllers\Postulaciones\PostulacionController;
 use Illuminate\Foundation\Application;
@@ -29,7 +30,7 @@ Route::get('/', function () {
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return Inertia::render('Dashboard');
-})->name('inicio');
+})->name('dashboard');
 
 Route::resource('partidos', PartidoController::class);
 
@@ -52,9 +53,8 @@ Route::prefix('partidos/{partido:slug}')->group(function () {
         Route::delete('postulaciones/{postulacion_id}/eliminar-calificacion', [PostulacionController::class, 'eliminarCalificacion'])
             ->name('postulaciones.eliminarCalificacion');
     
-    //Buscador de postulaciones
-    /* Route::post('postulaciones/filtrar', [PostulacionController::class, 'filtrarPostulaciones'])
-        ->name('postulaciones.filtrarPostulaciones'); */
+    Route::resource('calificaciones', CalificacionPartidoController::class)
+        ->except(['create', 'edit', 'show']);
 });
 
 //Notificaciones

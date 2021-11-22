@@ -24,6 +24,10 @@ class CalificacionPostulacionService
     ) {
         $calificaciones = [];
         foreach ($postulaciones as $postulacion) {
+
+            $calificaciones[$postulacion->user_id] =
+                    $this->crearCalificacion($postulacion);
+
             $postulacionesDelUsuario = Postulacion::where(
                 'user_id',
                 $postulacion->user_id
@@ -33,7 +37,6 @@ class CalificacionPostulacionService
 
             $calificaciones =
                 $this->obtenerCalificacionEnCadaPostulacion(
-                    $postulacion,
                     $postulacionesDelUsuario,
                     $calificaciones,
                     $puntajeSinPromedio
@@ -43,37 +46,27 @@ class CalificacionPostulacionService
     }
 
     public function obtenerCalificacionEnCadaPostulacion(
-        $postulacion,
         $postulacionesDelUsuario,
         $calificaciones,
         $puntajeSinPromedio
     ) {
         foreach ($postulacionesDelUsuario as $postulacionUser) {
-            if (array_key_exists(
-                $postulacionUser->user_id,
-                $calificaciones
-            )) {
-                $puntajeSinPromedio += $postulacionUser->puntaje;
-                $calificaciones[$postulacionUser->user_id]['partidos'] += 1;
-                $calificaciones[$postulacionUser->user_id]['puntaje'] =
-                    round($puntajeSinPromedio /
-                        $calificaciones[$postulacionUser->user_id]['partidos']);
-            } else {
-                $puntajeSinPromedio += $postulacionUser->puntaje;
-                $calificaciones[$postulacionUser->user_id] =
-                    $this->crearCalificacion($postulacion, $postulacionUser);
-            }
+            $puntajeSinPromedio += $postulacionUser->puntaje;
+            $calificaciones[$postulacionUser->user_id]['partidos'] += 1;
+            $calificaciones[$postulacionUser->user_id]['puntaje'] =
+                round($puntajeSinPromedio /
+                    $calificaciones[$postulacionUser->user_id]['partidos']);
         }
         return $calificaciones;
     }
 
-    public function crearCalificacion($postulacion, $postulacionUser)
+    public function crearCalificacion($postulacion)
     {
         return [
             'id' => $postulacion->id,
             'nombre' => $postulacion->user->name,
-            'puntaje' => round($postulacionUser->puntaje / 1, 2),
-            'partidos' => 1,
+            'puntaje' => 0,
+            'partidos' => 0,
         ];
     }
 }

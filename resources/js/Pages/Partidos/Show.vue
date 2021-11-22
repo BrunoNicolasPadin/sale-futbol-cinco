@@ -11,6 +11,12 @@
                 <li class="my-2"><span class="font-bold text-blue-900">Cancha de {{ partido.tipoDeCancha }}</span></li>
                 <li class="my-2">Estado del anuncio: <span class="font-bold text-blue-900">{{ partido.estado }}</span></li>
                 <li class="my-2">Detalles: <p class="font-bold text-blue-900 whitespace-pre-line">{{ partido.detalles }}</p></li>
+                <li class="my-2">
+                    <button type="button" @click="verCalificaciones()"
+                        class="px-2.5 py-2.5 rounded-sm shadow-md bg-blue-600 text-white hover:bg-blue-800 hover:shadow-lg">
+                        Ver calificaciones del partido
+                    </button>
+                </li>
                 <li v-if="presentoPostulacion" class="my-2">Tu estado: <span class="font-bold text-blue-900">{{ postulacion.estado }}</span></li>
                 <li v-if="partido.user_id != user_id && user_id != null " class="my-2">
                     <button v-if="presentoPostulacion == false && partido.estado == 'Buscando jugadores' " type="button" @click="quieroJugar()"
@@ -275,7 +281,11 @@
 
             calificarPostulacion(postulanteAceptado_id) {
                 this.$inertia.get(this.route('postulaciones.show', [this.partido.slug, postulanteAceptado_id]))
-            }
+            },
+
+            verCalificaciones() {
+                this.$inertia.get(this.route('calificaciones.index', this.partido.slug))
+            },
         }
     })
 </script>

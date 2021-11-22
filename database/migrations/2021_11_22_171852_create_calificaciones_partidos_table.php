@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePostulacionesTable extends Migration
+class CreateCalificacionesPartidosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,11 @@ class CreatePostulacionesTable extends Migration
      */
     public function up()
     {
-        Schema::create('postulaciones', function (Blueprint $table) {
+        Schema::create('calificaciones_partidos', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignId('user_id')->index()->constrained('users')->onDelete('cascade');
             $table->foreignUuid('partido_id')->index()->constrained('partidos')->onDelete('cascade');
-            $table->string('estado');
-            $table->integer('puntaje')->nullable();
+            $table->integer('puntaje');
             $table->text('comentario')->nullable();
             $table->timestamps();
         });
@@ -31,6 +30,6 @@ class CreatePostulacionesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('postulaciones');
+        Schema::dropIfExists('calificaciones_partidos');
     }
 }

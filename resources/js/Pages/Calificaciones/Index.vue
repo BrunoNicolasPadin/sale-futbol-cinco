@@ -1,38 +1,42 @@
 <template>
-    <app-layout title="Postulacion - Calificación">
+    <app-layout title="Partido - Calificación">
 
         <div class="my-3 text-3xl">
             <Link :href="route('partidos.show', partido.slug)" class="hover:underline">
                 {{ partido.nombre }}
-            </Link> / {{ postulacion.user.name }}
+            </Link> / Calificaciones
         </div>
 
         <hr class="bg-gray-200 p-px">
 
-        <div v-if="postulacion.puntaje != null && mostrarCajaParaCalificar == false " class="my-2">
-            <h2 class="uppercase text-xl font-semibold text-gray-700 my-2">Calificación: {{ postulacion.puntaje }}</h2>
-            <div v-if="postulacion.comentario">
+        <div v-for="calificacion in calificaciones" :key="calificacion.id">
+            <h2 class="text-3xl font-bold my-2 text-gray-700">{{ calificacion.user.name }} - 
+                <span class="uppercase">{{ calificacion.puntaje }}/10 puntos</span>
+            </h2>
+            <div v-if="calificacion.comentario">
                 <h2 class="uppercase text-xl font-semibold text-gray-700 my-2">Comentario:</h2>
-                <p class="whitespace-pre-line">{{ postulacion.comentario }}</p>
+                <p class="whitespace-pre-line">{{ calificacion.comentario }}</p>
             </div>
 
-            <div v-if="user_id == partido.user_id " class="my-6">
+            <div v-if="user_id == calificacion.user_id " class="my-6">
                 <div class="flex justify-end">
-                    <button type="button" @click="editarCalificacion()" 
+                    <button type="button" @click="editarCalificacion(calificacion)" 
                         class="mr-2 focus:outline-none text-white font-bold text-sm py-0.5 px-4 rounded-full bg-yellow-500 hover:bg-yellow-600 hover:shadow-lg">
                             Editar
                     </button>
 
-                    <button type="button" @click="eliminarCalificacion()" 
+                    <button type="button" @click="eliminarCalificacion(calificacion.id)" 
                         class="focus:outline-none text-white font-bold text-sm py-0.5 px-4 rounded-full bg-red-500 hover:bg-red-600 hover:shadow-lg">
                             Eliminar
                     </button>
                 </div>
             </div>
+
+            <hr class="bg-blue-800 p-px my-3">
         </div>
 
-        <div v-else class="my-6">
-            <h2 class="uppercase text-xl font-semibold text-gray-700 my-2">Calificar postulante</h2>
+        <div v-if="postulacion != null && mostrarCajaParaCalificar == true " class="my-3">
+            <h2 class="uppercase text-xl font-semibold text-gray-700 my-2">Calificar partido</h2>
             <form method="post" @submit.prevent="submit">
                 <estructura-formulario-vue>
                     <template #estructuraInput>
@@ -54,7 +58,13 @@
                     </template>
                 </estructura-formulario-vue>
 
-                <guardar />
+                <guardar v-if="mostrarBotonGuardar" />
+
+                <button v-else @click="actualizarCalificacion(calificacion_editar_id)" 
+                    type="button" 
+                    class="mt-3 focus:outline-none text-white text-sm py-2.5 px-5 rounded-md bg-green-500 hover:bg-green-600 hover:shadow-lg">
+                    Actualizar
+                </button>
             </form>
         </div>
     </app-layout>
@@ -83,6 +93,8 @@
             partido: Object,
             postulacion: Object,
             user_id: String,
+            calificacionDelPostulado: Boolean,
+            calificaciones: Array,
         },
 
         data() {
@@ -92,24 +104,42 @@
                     puntaje: null,
                     comentario: null,
                 },
+                calificacion_editar_id: null,
+                mostrarBotonGuardar: true,
+            }
+        },
+
+        mounted() {
+            if (this.calificacionDelPostulado == false) {
+                this.mostrarCajaParaCalificar = true
             }
         },
 
         methods: {
             submit() {
+                this.$inertia.post(this.route('calificaciones.store', this.partido.slug), this.form)
                 this.mostrarCajaParaCalificar = false
-                this.$inertia.put(this.route('postulaciones.calificar', [this.partido.slug, this.postulacion.id]), this.form)
+
             },
 
-            editarCalificacion() {
+            editarCalificacion(calificacion) {
                 this.mostrarCajaParaCalificar = true
-                this.form.puntaje = this.postulacion.puntaje
-                this.form.comentario = this.postulacion.comentario
+                this.mostrarBotonGuardar = false
+                this.form.puntaje = calificacion.puntaje
+                this.form.comentario = calificacion.comentario
+                this.calificacion_editar_id = calificacion.id
             },
 
-            eliminarCalificacion() {
+            actualizarCalificacion(calificacion_id) {
+                this.$inertia.put(this.route('calificaciones.update', [this.partido.slug, calificacion_id]), this.form)
+                this.mostrarCajaParaCalificar = false
+                this.mostrarBotonGuardar = true
+            },
+
+            eliminarCalificacion(calificacion_id) {
                 if (confirm('¿Estás seguro de que deseas eliminar esta calificación?')) {
-                    this.$inertia.delete(this.route('postulaciones.eliminarCalificacion', [this.partido.slug, this.postulacion.id]))
+                    this.$inertia.delete(this.route('calificaciones.destroy', [this.partido.slug, calificacion_id]))
+                    this.mostrarCajaParaCalificar = true
                 }
             }
         }
