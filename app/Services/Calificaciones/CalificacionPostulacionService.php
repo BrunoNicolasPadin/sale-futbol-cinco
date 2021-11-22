@@ -14,35 +14,66 @@ class CalificacionPostulacionService
             ->orderBy('created_at', 'ASC')
             ->get();
 
-        $postulacionesConCalificaciones = [];
+        return $this->obtenerPostulacionesAceptadasDeCadaPostulante(
+            $postulaciones
+        );
+    }
 
+    public function obtenerPostulacionesAceptadasDeCadaPostulante(
+        $postulaciones
+    ) {
+        $calificaciones = [];
         foreach ($postulaciones as $postulacion) {
-            $postulacionesDelUsuario = Postulacion::where('user_id', $postulacion->user_id)
-                ->where('estado', 'Aceptado')
-                ->get();
-                $puntajeSinPromedio = 0;
+            $postulacionesDelUsuario = Postulacion::where(
+                'user_id',
+                $postulacion->user_id
+            )->where('estado', 'Aceptado')->get();
 
-            foreach ($postulacionesDelUsuario as $postulacionUser) {
-                if (array_key_exists($postulacionUser->user_id, $postulacionesConCalificaciones)) {
+            $puntajeSinPromedio = 0;
 
-                    $puntajeSinPromedio = $puntajeSinPromedio + $postulacionUser->puntaje;
+            $calificaciones =
+                $this->obtenerCalificacionEnCadaPostulacion(
+                    $postulacion,
+                    $postulacionesDelUsuario,
+                    $calificaciones,
+                    $puntajeSinPromedio
+                );
+        }
+        return $calificaciones;
+    }
 
-                    $postulacionesConCalificaciones[$postulacionUser->user_id]['partidos'] = 
-                        $postulacionesConCalificaciones[$postulacionUser->user_id]['partidos'] + 1;
-
-                    $postulacionesConCalificaciones[$postulacionUser->user_id]['puntaje'] = 
-                        round($puntajeSinPromedio / $postulacionesConCalificaciones[$postulacionUser->user_id]['partidos']);
-                } else {
-                    $puntajeSinPromedio = $puntajeSinPromedio + $postulacionUser->puntaje;
-                    $postulacionesConCalificaciones[$postulacionUser->user_id] = [
-                        'id' => $postulacion->id,
-                        'nombre' => $postulacion->user->name,
-                        'puntaje' => round($postulacionUser->puntaje / 1, 2),
-                        'partidos' => 1,
-                    ];
-                }
+    public function obtenerCalificacionEnCadaPostulacion(
+        $postulacion,
+        $postulacionesDelUsuario,
+        $calificaciones,
+        $puntajeSinPromedio
+    ) {
+        foreach ($postulacionesDelUsuario as $postulacionUser) {
+            if (array_key_exists(
+                $postulacionUser->user_id,
+                $calificaciones
+            )) {
+                $puntajeSinPromedio += $postulacionUser->puntaje;
+                $calificaciones[$postulacionUser->user_id]['partidos'] += 1;
+                $calificaciones[$postulacionUser->user_id]['puntaje'] =
+                    round($puntajeSinPromedio /
+                        $calificaciones[$postulacionUser->user_id]['partidos']);
+            } else {
+                $puntajeSinPromedio += $postulacionUser->puntaje;
+                $calificaciones[$postulacionUser->user_id] =
+                    $this->crearCalificacion($postulacion, $postulacionUser);
             }
         }
-        return $postulacionesConCalificaciones;
+        return $calificaciones;
+    }
+
+    public function crearCalificacion($postulacion, $postulacionUser)
+    {
+        return [
+            'id' => $postulacion->id,
+            'nombre' => $postulacion->user->name,
+            'puntaje' => round($postulacionUser->puntaje / 1, 2),
+            'partidos' => 1,
+        ];
     }
 }

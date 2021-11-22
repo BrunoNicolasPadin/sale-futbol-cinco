@@ -27,7 +27,8 @@ class PostulacionController extends Controller
         $partido = Partido::where('slug', $slug)->first();
         $this->authorize('viewAny', [Postulacion::class, $partido]);
 
-        return $this->calificacionPostulacionService->obtenerCalificaciones($partido->id, 'Esperando respuesta');
+        return $this->calificacionPostulacionService
+            ->obtenerCalificaciones($partido->id, 'Esperando respuesta');
     }
 
     public function obtenerPostulantesAceptados($slug)
@@ -35,7 +36,8 @@ class PostulacionController extends Controller
         $partido = Partido::where('slug', $slug)->first();
         $this->authorize('verAceptados', [Postulacion::class, $partido]);
 
-        return $this->calificacionPostulacionService->obtenerCalificaciones($partido->id, 'Aceptado');
+        return $this->calificacionPostulacionService
+            ->obtenerCalificaciones($partido->id, 'Aceptado');
     }
 
     public function store(Request $request, $slug)
@@ -112,7 +114,7 @@ class PostulacionController extends Controller
 
         return redirect(route('postulaciones.show', [
             $partido->slug,
-            $postulacion->id
+            $postulacion->id,
         ]))->with('message', 'Calificación enviada');
     }
 
