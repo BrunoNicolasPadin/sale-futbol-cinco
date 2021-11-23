@@ -11,6 +11,8 @@
                 <li class="my-2"><span class="font-bold text-blue-900">Cancha de {{ partido.tipoDeCancha }}</span></li>
                 <li class="my-2">Estado del anuncio: <span class="font-bold text-blue-900">{{ partido.estado }}</span></li>
                 <li class="my-2">Detalles: <p class="font-bold text-blue-900 whitespace-pre-line">{{ partido.detalles }}</p></li>
+                <li class="my-2">Calificación: <span class="font-bold text-blue-900">{{ calificacion['puntaje'] }}/10</span></li>
+                <li class="my-2">Cantidad de calificaciones: <span class="font-bold text-blue-900">{{ calificacion['cantidad'] }}</span></li>
                 <li class="my-2">
                     <button type="button" @click="verCalificaciones()"
                         class="px-2.5 py-2.5 rounded-sm shadow-md bg-blue-600 text-white hover:bg-blue-800 hover:shadow-lg">
@@ -192,6 +194,7 @@
             user_id: String,
             presentoPostulacion: Boolean,
             postulacion: Object,
+            calificacion: Array,
         },
 
         data() {

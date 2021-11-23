@@ -67,12 +67,6 @@
                             <span class="font-semibold text-green-800">
                                 {{ partido.user.name }}
                             </span>
-                            <span>
-                                -
-                            </span>
-                            <span>
-                                4.2/5
-                            </span>
                         </div>
                         <div class="flex justify-end">
                             <span>Hace 2h</span>

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Partidos\StorePartidoRequest;
 use App\Models\Partidos\Partido;
 use App\Models\Postulaciones\Postulacion;
+use App\Services\Calificaciones\CalificacionPartidoService;
 use App\Services\Slugs\SlugService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -18,8 +19,10 @@ class PartidoController extends Controller
 
     public function __construct(
         SlugService $slugService,
+        CalificacionPartidoService $calificacionPartidoService
     ) {
         $this->slugService = $slugService;
+        $this->calificacionPartidoService = $calificacionPartidoService;
         $this->middleware('auth')->except(
             'index',
             'show',
@@ -128,6 +131,8 @@ class PartidoController extends Controller
             'user_id' => $user_id,
             'presentoPostulacion' => $presentoPostulacion,
             'postulacion' => $postulacion,
+            'calificacion' => $this->calificacionPartidoService
+                ->obtenerCalificaciones($partido->id),
         ]);
     }
 
