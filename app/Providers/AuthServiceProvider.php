@@ -5,7 +5,7 @@ namespace App\Providers;
 use App\Models\Partidos\CalificacionPartido;
 use App\Models\Partidos\Partido;
 use App\Models\Postulaciones\Postulacion;
-use App\Policies\Calificaciones\CalificacionPolicy;
+use App\Policies\Partidos\CalificacionPolicy;
 use App\Policies\Partidos\PartidoPolicy;
 use App\Policies\Postulaciones\PostulacionPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;

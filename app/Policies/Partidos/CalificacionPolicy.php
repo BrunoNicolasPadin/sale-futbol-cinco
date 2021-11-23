@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Policies\Calificaciones;
+namespace App\Policies\Partidos;
 
 use App\Models\Partidos\CalificacionPartido;
 use App\Models\Partidos\Partido;
@@ -31,9 +31,9 @@ class CalificacionPolicy
         if (CalificacionPartido::where('user_id', $user->id)
             ->where('partido_id', $partido->id)
             ->exists()) {
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 
     public function verificarQueCoincidaElUsuario(
