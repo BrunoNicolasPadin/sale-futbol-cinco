@@ -44,6 +44,8 @@ class Partido extends Model
             $query->where('tipoDeCancha', $tipoDeCancha);
         })->when($request->user_id, function ($query, $user_id) {
             $query->where('user_id', $user_id);
+        })->when($request->estado, function ($query, $estado) {
+            $query->where('estado', $estado);
         });
     }
 }
