@@ -72,7 +72,6 @@ class PartidoController extends Controller
         $request = $this->cambiarFechaParaGuardarCorrectamente(
             $request
         );
-
         $partido = new Partido();
         $partido->nombre = $request->nombre;
         $partido->slug = $this->slugService->obtenerSlug(
@@ -104,7 +103,8 @@ class PartidoController extends Controller
             $user_id = Auth::id();
 
             $presentoPostulacion = Postulacion::where(
-                'partido_id', $partido->id
+                'partido_id',
+                $partido->id
             )->where('user_id', $user_id)->exists();
 
             if ($presentoPostulacion) {
@@ -132,7 +132,7 @@ class PartidoController extends Controller
                 )->format('d/m/Y - H:i:s'),
                 'user' => $partido->user,
                 'calificacionOrganizador' => $this->calificacionPartidoService
-                ->obtenerPromedioComoOrganizador($partido->user->id),
+                    ->obtenerPromedioComoOrganizador($partido->user->id),
             ],
             'user_id' => $user_id,
             'presentoPostulacion' => $presentoPostulacion,

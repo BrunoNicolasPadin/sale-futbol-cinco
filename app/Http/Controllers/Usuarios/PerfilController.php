@@ -64,25 +64,32 @@ class PerfilController extends Controller
                         )->format('d/m/y - H:i:s'),
                         'user' => $partido->user,
                         'calificacion' => $this->calificacionPartidoService
-                            ->obtenerCalificaciones($partido->id)
+                            ->obtenerCalificaciones($partido->id),
                     ];
                 }),
         ]);
     }
 
-    public function mostrarPostulacionesAceptadas(Request $request, $nombreUsuario)
-    {
+    public function mostrarPostulacionesAceptadas(
+        Request $request,
+        $nombreUsuario
+    ) {
         $request['estado'] = 'Aceptado';
         return Inertia::render('Perfiles/Postulaciones', [
             'usuario' => User::where('nombreUsuario', $nombreUsuario)
                 ->first(),
-            'partidos' => $this->filtrarPostulaciones($request, $nombreUsuario),
+            'partidos' => $this->filtrarPostulaciones(
+                $request,
+                $nombreUsuario
+            ),
             'postulacionesAceptadas' => true,
         ]);
     }
 
-    public function mostrarPostulacionesEnEspera(Request $request, $nombreUsuario)
-    {
+    public function mostrarPostulacionesEnEspera(
+        Request $request,
+        $nombreUsuario
+    ) {
         $request['estado'] = 'Esperando respuesta';
         return Inertia::render('Perfiles/Postulaciones', [
             'usuario' => User::where('nombreUsuario', $nombreUsuario)
@@ -92,31 +99,33 @@ class PerfilController extends Controller
         ]);
     }
 
-    public function filtrarPostulaciones(Request $request, $nombreUsuario)
-    {
+    public function filtrarPostulaciones(
+        Request $request,
+        $nombreUsuario
+    ) {
         $usuario = User::where('nombreUsuario', $nombreUsuario)
             ->first();
 
         return Postulacion::where('user_id', $usuario->id)
-        ->where('estado', $request->estado)
-        ->with('partido.user')
-        ->orderBy('created_at', 'DESC')
-        ->paginate(20)
-        ->through(function ($postulacion) {
-            return [
-                'id' => $postulacion->partido->id,
-                'nombre' => $postulacion->partido->nombre,
-                'slug' => $postulacion->partido->slug,
-                'cuantosFaltan' => $postulacion->partido->cuantosFaltan,
-                'precio' => $postulacion->partido->precio,
-                'tipoDeCancha' => $postulacion->partido->tipoDeCancha,
-                'estado' => $postulacion->partido->estado,
-                'fechaHoraFinalizacion' => Carbon::parse(
-                    $postulacion->partido->fechaHoraFinalizacion
-                )->format('d/m/y - H:i:s'),
-                'user' => $postulacion->partido->user,
-                'puntajeRecibido' => $postulacion->puntaje,
-            ];
-        });
+            ->where('estado', $request->estado)
+            ->with('partido.user')
+            ->orderBy('created_at', 'DESC')
+            ->paginate(20)
+            ->through(function ($postulacion) {
+                return [
+                    'id' => $postulacion->partido->id,
+                    'nombre' => $postulacion->partido->nombre,
+                    'slug' => $postulacion->partido->slug,
+                    'cuantosFaltan' => $postulacion->partido->cuantosFaltan,
+                    'precio' => $postulacion->partido->precio,
+                    'tipoDeCancha' => $postulacion->partido->tipoDeCancha,
+                    'estado' => $postulacion->partido->estado,
+                    'fechaHoraFinalizacion' => Carbon::parse(
+                        $postulacion->partido->fechaHoraFinalizacion
+                    )->format('d/m/y - H:i:s'),
+                    'user' => $postulacion->partido->user,
+                    'puntajeRecibido' => $postulacion->puntaje,
+                ];
+            });
     }
 }
