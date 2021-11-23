@@ -49,6 +49,8 @@ class CalificacionPartidoController extends Controller
 
     public function store(CalificacionRequest $request, Partido $partido)
     {
+        $this->authorize('create', [CalificacionPartido::class, $partido]);
+
         $calificacionPartido = new CalificacionPartido();
         $calificacionPartido->partido()->associate($partido->id);
         $calificacionPartido->user()->associate(Auth::id());
@@ -65,6 +67,8 @@ class CalificacionPartidoController extends Controller
 
     public function update(CalificacionRequest $request, Partido $partido, CalificacionPartido $calificacione)
     {
+        $this->authorize('update', $calificacione);
+
         $calificacione->puntaje = $request->puntaje;
         $calificacione->comentario = $request->comentario;
         $calificacione->save();
