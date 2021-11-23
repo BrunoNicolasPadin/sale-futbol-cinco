@@ -4,21 +4,24 @@
 
         <jet-banner />
 
-        <div class="min-h-screen" style="background-color: rgba(246,248,250,255)">
+        <div class="flex flex-col min-h-screen" style="background-color: rgba(246,248,250,255)">
             <nav class="bg-white border-b border-gray-100">
                 <!-- Primary Navigation Menu -->
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="flex justify-between h-16">
                         <div class="flex">
                             <!-- Logo -->
-                            <div class="flex-shrink-0 flex items-center">
+                            <!-- <div class="flex-shrink-0 flex items-center">
                                 <Link :href="route('dashboard')">
                                     <jet-application-mark class="block h-9 w-auto" />
                                 </Link>
-                            </div>
+                            </div> -->
 
                             <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                                <jet-nav-link :href="route('inicio')" :active="route().current('inicio')">
+                                    Inicio
+                                </jet-nav-link>
                                 <jet-nav-link :href="route('partidos.index')" :active="route().current('partidos.index')">
                                     Partidos
                                 </jet-nav-link>
@@ -103,7 +106,7 @@
                                     <template #content>
                                         <!-- Account Management -->
                                         <div class="block px-4 py-2 text-xs text-gray-400">
-                                            Manage Account
+                                            Tu cuenta
                                         </div>
 
                                         <jet-dropdown-link :href="route('perfil.mostrar', $page.props.user.nombreUsuario)">
@@ -123,7 +126,7 @@
                                         <!-- Authentication -->
                                         <form @submit.prevent="logout">
                                             <jet-dropdown-link as="button">
-                                                Log Out
+                                                Salir
                                             </jet-dropdown-link>
                                         </form>
                                     </template>
@@ -146,6 +149,9 @@
                 <!-- Responsive Navigation Menu -->
                 <div :class="{'block': showingNavigationDropdown, 'hidden': ! showingNavigationDropdown}" class="sm:hidden">
                     <div class="pt-2 pb-3 space-y-1">
+                        <jet-responsive-nav-link :href="route('inicio')" :active="route().current('inicio')">
+                            Inicio
+                        </jet-responsive-nav-link>
                         <jet-responsive-nav-link :href="route('partidos.index')" :active="route().current('partidos.index')">
                             Partidos
                         </jet-responsive-nav-link>
@@ -165,8 +171,12 @@
                         </div>
 
                         <div class="mt-3 space-y-1">
+                            <jet-responsive-nav-link :href="route('perfil.mostrar', $page.props.user.nombreUsuario)" 
+                                :active="route().current('perfil.mostrar', $page.props.user.nombreUsuario)">
+                                Perfil
+                            </jet-responsive-nav-link>
                             <jet-responsive-nav-link :href="route('profile.show')" :active="route().current('profile.show')">
-                                Profile
+                                Configuración
                             </jet-responsive-nav-link>
 
                             <jet-responsive-nav-link :href="route('api-tokens.index')" :active="route().current('api-tokens.index')" v-if="$page.props.jetstream.hasApiFeatures">
@@ -176,7 +186,7 @@
                             <!-- Authentication -->
                             <form method="POST" @submit.prevent="logout">
                                 <jet-responsive-nav-link as="button">
-                                    Log Out
+                                    Salir
                                 </jet-responsive-nav-link>
                             </form>
 
@@ -230,7 +240,7 @@
             </header>
 
             <!-- Page Content -->
-            <main>
+            <main class="flex-grow">
                 <div class="py-6">
                     <div class="max-w-7xl mx-auto px-4 md:px-8">
                         <flash-messages />
@@ -238,6 +248,17 @@
                     </div>
                 </div>
             </main>
+
+            <div class="bg-gray-200">
+                <footer class="flex flex-wrap items-center justify-between p-3 m-auto">
+                    <div class="container mx-auto flex flex-col flex-wrap items-center justify-between">
+                        <div class="flex mx-auto text-gray-500 text-center">
+                            <span>Copyright © 2021 - Sale partido | Todos los derechos reservados.
+                            </span>
+                        </div>
+                    </div>
+                </footer>
+            </div>
         </div>
     </div>
 </template>

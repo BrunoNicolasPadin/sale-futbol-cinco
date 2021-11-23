@@ -1,13 +1,13 @@
 <template>
-    <Head title="Forgot Password" />
+    <Head title="Olvidó su contraseña" />
 
     <jet-authentication-card>
-        <template #logo>
+        <!-- <template #logo>
             <jet-authentication-card-logo />
-        </template>
+        </template> -->
 
         <div class="mb-4 text-sm text-gray-600">
-            Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.
+            ¿Olvidó su contraseña? No hay problema. Solo ingrese su email y nosotros le enviaremos por email un link para crear una nueva contraseña.
         </div>
 
         <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
@@ -24,7 +24,7 @@
 
             <div class="flex items-center justify-end mt-4">
                 <jet-button :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Email Password Reset Link
+                    Recuperar contraseña
                 </jet-button>
             </div>
         </form>

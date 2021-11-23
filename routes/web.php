@@ -1,11 +1,14 @@
 <?php
 
+use App\Http\Controllers\Auth\ResetearContrasenaController;
+use App\Http\Controllers\Auth\VerificacionEmailController;
 use App\Http\Controllers\Notificaciones\NotificacionController;
 use App\Http\Controllers\Partidos\CalificacionPartidoController;
 use App\Http\Controllers\Partidos\PartidoController;
 use App\Http\Controllers\Postulaciones\PostulacionController;
 use App\Http\Controllers\Usuarios\PerfilController;
 use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -21,13 +24,46 @@ use Inertia\Inertia;
 */
 
 Route::get('/', function () {
+    $check = Auth::check();
     return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
+        'canLogin' => $check = ($check === true) ? false : true,
         'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
+        /* 'laravelVersion' => Application::VERSION,
+        'phpVersion' => PHP_VERSION, */
     ]);
-});
+})->name('inicio');
+
+//VERIFICAR EMAIL AL REGISTRARSE
+
+Route::get('email/verify', [VerificacionEmailController::class, 'avisarVerificacion'])
+    ->middleware('auth')
+    ->name('verification.notice');
+
+Route::get('email/verify/{id}/{hash}', [VerificacionEmailController::class, 'verificar'])
+    ->middleware(['auth', 'signed'])
+    ->name('verification.verify');
+
+Route::post('email/verification-notification', [VerificacionEmailController::class, 'enviarVerificacion'])
+    ->middleware(['auth', 'throttle:6,1'])
+    ->name('verification.send');
+
+// RESETEAR CONTRASENA
+
+Route::get('forgot-password', [ResetearContrasenaController::class, 'olvidoContrasena'])
+    ->middleware('guest')
+    ->name('password.request');
+
+Route::post('forgot-password', [ResetearContrasenaController::class, 'enviarEmail'])
+    ->middleware('guest')
+    ->name('password.email');
+
+Route::get('reset-password/{token}', [ResetearContrasenaController::class, 'resetear'])
+    ->middleware('guest')
+    ->name('password.reset');
+
+Route::post('reset-password', [ResetearContrasenaController::class, 'actualizarContrasena'])
+    ->middleware('guest')
+    ->name('password.update');
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return Inertia::render('Dashboard');

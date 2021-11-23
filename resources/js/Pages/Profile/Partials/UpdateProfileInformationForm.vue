@@ -1,11 +1,11 @@
 <template>
     <jet-form-section @submitted="updateProfileInformation">
         <template #title>
-            Profile Information
+            Perfil
         </template>
 
         <template #description>
-            Update your account's profile information and email address.
+            Actualiza tu información
         </template>
 
         <template #form>
@@ -70,11 +70,11 @@
 
         <template #actions>
             <jet-action-message :on="form.recentlySuccessful" class="mr-3">
-                Saved.
+                Guardado.
             </jet-action-message>
 
             <jet-button :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                Save
+                Guardar
             </jet-button>
         </template>
     </jet-form-section>
