@@ -18,14 +18,29 @@ class CalificacionPolicy
             ->where('partido_id', $partido->id)
             ->where('estado', 'Aceptado')
             ->exists()) {
+            return $this->verificarCalificacionYaHecha(
+                $user,
+                $partido
+            );
+        }
+        return false;
+    }
+
+    public function verificarCalificacionYaHecha($user, $partido)
+    {
+        if (CalificacionPartido::where('user_id', $user->id)
+            ->where('partido_id', $partido->id)
+            ->exists()) {
             return true;
         }
         return false;
     }
 
-    public function update(User $user, CalificacionPartido $calificacionPartido)
-    {
-        if ($user->id == $calificacionPartido->user_id) {
+    public function verificarQueCoincidaElUsuario(
+        User $user,
+        CalificacionPartido $calificacionPartido
+    ) {
+        if ($user->id === $calificacionPartido->user_id) {
             return true;
         }
         return false;

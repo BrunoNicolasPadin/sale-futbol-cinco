@@ -19,37 +19,61 @@ class CalificacionPartidoController extends Controller
         $postulacion = null;
         $user_id = null;
         $calificacionDelPostulado = false;
-
         if (Auth::check()) {
-            $postulacion = Postulacion::where('partido_id', $partido->id)
-                ->where('user_id', Auth::id())
-                ->where('estado', 'Aceptado')
-                ->first();
-
+            $postulacion = $this->obtenerPostulacion($partido);
             $user_id = Auth::id();
-
-            if (CalificacionPartido::where('partido_id', $partido->id)
-                ->where('user_id', $user_id)
-                ->exists()) {
-                $calificacionDelPostulado = true;
-            }
+            $calificacionDelPostulado =
+                $this->verificarExistenciaDeLaCalificacion(
+                    $partido,
+                    $user_id
+                );
         }
-
         return Inertia::render('Calificaciones/Index', [
             'partido' => $partido,
             'postulacion' => $postulacion,
             'user_id' => $user_id,
             'calificacionDelPostulado' => $calificacionDelPostulado,
-            'calificaciones' => CalificacionPartido::where('partido_id', $partido->id)
-                ->with('user')
-                ->orderBy('created_at', 'ASC')
-                ->get(),
+            'calificaciones' => CalificacionPartido::where(
+                'partido_id',
+                $partido->id
+            )->with('user')->orderBy('created_at', 'ASC')->get(),
         ]);
     }
 
-    public function store(CalificacionRequest $request, Partido $partido)
+    public function obtenerPostulacion($partido)
     {
-        $this->authorize('create', [CalificacionPartido::class, $partido]);
+        return Postulacion::where(
+            'partido_id',
+            $partido->id
+        )
+            ->where('user_id', Auth::id())
+            ->where('estado', 'Aceptado')
+            ->first();
+    }
+
+    public function verificarExistenciaDeLaCalificacion(
+        $partido,
+        $user_id
+    ) {
+        if (CalificacionPartido::where(
+            'partido_id',
+            $partido->id
+        )
+            ->where('user_id', $user_id)
+            ->exists()) {
+            return true;
+        }
+        return false;
+    }
+
+    public function store(
+        CalificacionRequest $request,
+        Partido $partido
+    ) {
+        $this->authorize('create', [
+            CalificacionPartido::class,
+            $partido,
+        ]);
 
         $calificacionPartido = new CalificacionPartido();
         $calificacionPartido->partido()->associate($partido->id);
@@ -65,9 +89,12 @@ class CalificacionPartidoController extends Controller
             ->with('message', 'Calificación enviada');
     }
 
-    public function update(CalificacionRequest $request, Partido $partido, CalificacionPartido $calificacione)
-    {
-        $this->authorize('update', $calificacione);
+    public function update(
+        CalificacionRequest $request,
+        Partido $partido,
+        CalificacionPartido $calificacione
+    ) {
+        $this->authorize('verificarQueCoincidaElUsuario', $calificacione);
 
         $calificacione->puntaje = $request->puntaje;
         $calificacione->comentario = $request->comentario;
@@ -77,8 +104,12 @@ class CalificacionPartidoController extends Controller
             ->with('message', 'Calificación actualizada');
     }
 
-    public function destroy(Partido $partido, CalificacionPartido $calificacione)
-    {
+    public function destroy(
+        Partido $partido,
+        CalificacionPartido $calificacione
+    ) {
+        $this->authorize('verificarQueCoincidaElUsuario', $calificacione);
+
         $calificacione->delete();
         return redirect(route('calificaciones.index', $partido->slug))
             ->with('message', 'Tu calificación fue eliminada');
