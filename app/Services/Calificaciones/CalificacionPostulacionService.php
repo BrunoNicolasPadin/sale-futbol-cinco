@@ -31,7 +31,8 @@ class CalificacionPostulacionService
             $postulacionesDelUsuario = Postulacion::where(
                 'user_id',
                 $postulacion->user_id
-            )->where('estado', 'Aceptado')->get();
+            )->where('estado', 'Aceptado')
+            ->where('puntaje', '<>', null)->get();
 
             $puntajeSinPromedio = 0;
 
@@ -65,6 +66,7 @@ class CalificacionPostulacionService
         return [
             'id' => $postulacion->id,
             'nombre' => $postulacion->user->name,
+            'nombreUsuario' => $postulacion->user->nombreUsuario,
             'puntaje' => 0,
             'partidos' => 0,
         ];

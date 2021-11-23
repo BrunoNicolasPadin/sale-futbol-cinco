@@ -16,6 +16,7 @@ use Inertia\Inertia;
 class PartidoController extends Controller
 {
     protected $slugService;
+    protected $calificacionPartidoService;
 
     public function __construct(
         SlugService $slugService,
@@ -41,8 +42,7 @@ class PartidoController extends Controller
     {
         return Partido::with('user')
             ->filtrar($request)
-            ->where('estado', 'Buscando jugadores')
-            ->orderBy('nombre')
+            ->orderBy('created_at', 'DESC')
             ->paginate(20)
             ->through(function ($partido) {
                 return [
@@ -53,6 +53,7 @@ class PartidoController extends Controller
                     'cuantosFaltan' => $partido->cuantosFaltan,
                     'precio' => $partido->precio,
                     'tipoDeCancha' => $partido->tipoDeCancha,
+                    'estado' => $partido->estado,
                     'fechaHoraFinalizacion' => Carbon::parse(
                         $partido->fechaHoraFinalizacion
                     )->format('d/m/y - H:i:s'),
@@ -93,6 +94,8 @@ class PartidoController extends Controller
 
     public function show(Partido $partido)
     {
+        $partido = Partido::with('user')
+            ->findOrFail($partido->id);
         $user_id = null;
         $presentoPostulacion = null;
         $postulacion = null;
@@ -127,6 +130,9 @@ class PartidoController extends Controller
                 'fechaHoraFinalizacion' => Carbon::parse(
                     $partido->fechaHoraFinalizacion
                 )->format('d/m/Y - H:i:s'),
+                'user' => $partido->user,
+                'calificacionOrganizador' => $this->calificacionPartidoService
+                ->obtenerPromedioComoOrganizador($partido->user->id),
             ],
             'user_id' => $user_id,
             'presentoPostulacion' => $presentoPostulacion,

@@ -106,8 +106,12 @@
                                             Manage Account
                                         </div>
 
+                                        <jet-dropdown-link :href="route('perfil.mostrar', $page.props.user.nombreUsuario)">
+                                            Perfil
+                                        </jet-dropdown-link>
+
                                         <jet-dropdown-link :href="route('profile.show')">
-                                            Profile
+                                            Configuración
                                         </jet-dropdown-link>
 
                                         <jet-dropdown-link :href="route('api-tokens.index')" v-if="$page.props.jetstream.hasApiFeatures">
@@ -269,6 +273,7 @@
         data() {
             return {
                 showingNavigationDropdown: false,
+                nombreUsuario: null,
             }
         },
 

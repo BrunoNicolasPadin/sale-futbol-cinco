@@ -15,6 +15,11 @@
             </div>
 
             <div class="mt-4">
+                <jet-label for="nombre de usuario" value="Nombre de usuario (todo junto)" />
+                <jet-input id="nombre de usuario" type="text" class="mt-1 block w-full" v-model="form.nombreUsuario" required autocomplete="nombre de usuario" />
+            </div>
+
+            <div class="mt-4">
                 <jet-label for="email" value="Email" />
                 <jet-input id="email" type="email" class="mt-1 block w-full" v-model="form.email" required />
             </div>
@@ -27,6 +32,11 @@
             <div class="mt-4">
                 <jet-label for="password_confirmation" value="Confirm Password" />
                 <jet-input id="password_confirmation" type="password" class="mt-1 block w-full" v-model="form.password_confirmation" required autocomplete="new-password" />
+            </div>
+
+            <div class="mt-4">
+                <jet-label for="numero" value="Numero de celular para contacto" />
+                <jet-input id="numero" type="text" class="mt-1 block w-full" v-model="form.numero" required autocomplete="numero" />
             </div>
 
             <div class="mt-4" v-if="$page.props.jetstream.hasTermsAndPrivacyPolicyFeature">
@@ -82,10 +92,12 @@
             return {
                 form: this.$inertia.form({
                     name: '',
+                    nombreUsuario: '',
                     email: '',
                     password: '',
                     password_confirmation: '',
                     terms: false,
+                    numero: '',
                 })
             }
         },

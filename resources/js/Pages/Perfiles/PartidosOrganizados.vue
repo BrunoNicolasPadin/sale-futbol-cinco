@@ -1,13 +1,9 @@
 <template>
-    <app-layout title="Partidos - Listar">
+    <app-layout title="Perfil">
+        <perfil-nav-componente :usuario="usuario" />
 
-        <div class="my-2">
-            <button type="button" @click="publicarPartido()" 
-                class="px-2.5 py-2.5 rounded-sm shadow-md bg-green-600 text-white font-semibold hover:bg-green-800 hover:shadow-lg">
-                Publicar partido
-            </button>
-        </div>
-        <!-- Buscador -->
+        <h1 class="text-3xl font-bold my-3">Partidos organizados</h1>
+
         <div class="relative mt-6 mx-auto">
             <input 
                 class="w-full border rounded-md pl-10 pr-4 py-2 focus:border-blue-500 focus:outline-none focus:shadow-outline" 
@@ -62,10 +58,12 @@
 
             <div v-for="partido in partidosFiltrados.data" :key="partido.id">
                 <div class="my-3 bg-white shadow-md rounded-md p-4">
-                    <div class="text-base font-semibold text-green-800">
-                        <Link :href="route('perfil.mostrar', partido.user.nombreUsuario)" class="hover:underline cursor-pointer">
-                            {{ partido.user.name }}
-                        </Link>
+                    <div class="text-base">
+                        <span class="font-semibold text-green-800">
+                            <Link :href="route('perfil.mostrar', partido.user.nombreUsuario)" class="hover:underline">
+                                {{ partido.user.name }}
+                            </Link>
+                        </span>
                     </div>
                     
                     <h1 class="text-2xl font-black mt-3">
@@ -98,9 +96,14 @@
                             </div>
                         </div>
                     </div>
+
+                    <hr class="bg-gray-100 p-px my-3">
+
+                    <h1><span class="font-bold">Calificación</span>: {{ partido.calificacion.puntaje }}/10 - 
+                    <span class="font-bold">Votos</span>: {{ partido.calificacion.cantidad }}</h1>
                 </div>
 
-                <hr class="bg-gray-200 p-px">
+                <hr class="bg-gray-300 p-px">
             </div>
             
             <!-- Paginador -->
@@ -110,31 +113,34 @@
                 </template>
             </div>
         </div>
-
     </app-layout>
 </template>
 
 <script>
     import { defineComponent } from 'vue'
     import AppLayout from '@/Layouts/AppLayout.vue'
+    import { Link } from '@inertiajs/inertia-vue3';
     import EstructuraInputVue from '@/Shared/Formulario/EstructuraInput.vue'
     import InputComponenteVue from '@/Shared/Formulario/InputComponente.vue'
-    import { Link } from '@inertiajs/inertia-vue3';
+    import PerfilNavComponente from '@/Shared/Perfil/PerfilNavComponente.vue';
 
     export default defineComponent({
-            components: {
+        components: {
             AppLayout,
+            Link,
             EstructuraInputVue,
             InputComponenteVue,
-            Link,
+            PerfilNavComponente,
         },
 
         props: {
+            usuario: Object,
             partidos: Object,
         },
 
         data() {
             return {
+                showMenu: false,
                 isOpen: false,
                 partidosFiltrados: this.partidos,
                 formBuscador: {
@@ -142,21 +148,22 @@
                     nombre: null,
                     tipoDeCancha: '',
                     cuantosFaltan: null,
+                    user_id: this.usuario.id,
 
                 },
             }
         },
-
         methods: {
+            toggleNavbar: function(){
+                this.showMenu = !this.showMenu;
+            },
+
             openModal: function () {
                 this.isOpen = true;
             },
+
             closeModal: function () {
                 this.isOpen = false;
-            },
-
-            publicarPartido() {
-                this.$inertia.get(this.route('partidos.create'))
             },
 
             buscar() {

@@ -10,8 +10,10 @@
         <hr class="bg-gray-200 p-px">
 
         <div v-for="calificacion in calificaciones" :key="calificacion.id">
-            <h2 class="text-3xl font-bold my-2 text-gray-700">{{ calificacion.user.name }} - 
-                <span class="uppercase">{{ calificacion.puntaje }}/10 puntos</span>
+            <h2 class="text-3xl font-bold my-2 text-gray-700">
+                <Link :href="route('perfil.mostrar', calificacion.user.nombreUsuario)" class="hover:underline">
+                    {{ calificacion.user.name }}
+                </Link> - {{ calificacion.puntaje }}/10 puntos
             </h2>
             <div v-if="calificacion.comentario">
                 <h2 class="uppercase text-xl font-semibold text-gray-700 my-2">Comentario:</h2>

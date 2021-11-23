@@ -3,7 +3,17 @@
         <div class="px-6">
             <h1 class="text-4xl text-center font-extrabold">{{ partido.nombre }}</h1>
 
-            <ul class="list-disc">
+            <ul class="my-6 list-disc">
+                <li class="my-2">Organizador: <span class="font-bold text-blue-900">
+                    <Link :href="route('perfil.mostrar', partido.user.nombreUsuario)" class="hover:underline cursor-pointer">
+                        {{ partido.user.name }}
+                    </Link>
+                </span></li>
+                <li class="my-2">
+                    Calificación como organizador: <span class="font-bold text-blue-900">
+                        {{ partido.calificacionOrganizador[0] }}/10 - {{ partido.calificacionOrganizador[0] }} votos
+                    </span>
+                </li>
                 <li class="my-2">Precio: <span class="font-bold text-blue-900">${{ partido.precio }}</span></li>
                 <li class="my-2">Lugar: <span class="font-bold text-blue-900">{{ partido.lugar }}</span></li>
                 <li class="my-2">Horario: <span class="font-bold text-blue-900">{{ partido.fechaHoraFinalizacion }}</span></li>
@@ -117,7 +127,9 @@
                         </div>
                         
                         <h1 class="text-3xl font-black mt-3">
-                            {{ postulacion.nombre }}
+                            <Link :href="route('perfil.mostrar', postulacion.nombreUsuario)" class="hover:underline cursor-pointer">
+                                {{ postulacion.nombre }}
+                            </Link>
                         </h1>
 
                         <div class="flex justify-end">
@@ -151,7 +163,9 @@
                         </div>
                         
                         <h1 class="text-3xl font-black mt-3">
-                            {{ postulanteAceptado.nombre }}
+                            <Link :href="route('perfil.mostrar', postulanteAceptado.nombreUsuario)" class="hover:underline cursor-pointer">
+                                {{ postulanteAceptado.nombre }}
+                            </Link>
                         </h1>
 
                         <div v-if="partido.user_id == user_id" class="flex space-x-2 justify-end">
@@ -177,16 +191,16 @@
 <script>
     import { defineComponent } from 'vue'
     import AppLayout from '@/Layouts/AppLayout.vue'
-    import { Link } from '@inertiajs/inertia-vue3';
     import EstructuraInputVue from '@/Shared/Formulario/EstructuraInput.vue'
     import InputComponenteVue from '@/Shared/Formulario/InputComponente.vue'
+    import { Link } from '@inertiajs/inertia-vue3';
 
     export default defineComponent({
             components: {
             AppLayout,
-            Link,
             EstructuraInputVue,
             InputComponenteVue,
+            Link,
         },
 
         props: {
