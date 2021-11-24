@@ -4,32 +4,50 @@
             <h1 class="text-4xl text-center font-extrabold">{{ partido.nombre }}</h1>
 
             <ul class="my-6 list-disc">
-                <li class="my-2">Organizador: <span class="font-bold text-blue-900">
+                <li class="my-2">
+                    <topico punto="Organizador" />
                     <Link :href="route('perfil.mostrar', partido.user.nombreUsuario)" class="hover:underline cursor-pointer">
                         {{ partido.user.name }}
                     </Link>
-                </span></li>
-                <li class="my-2">
-                    Calificación como organizador: <span class="font-bold text-blue-900">
-                        {{ partido.calificacionOrganizador[0] }}/10 - {{ partido.calificacionOrganizador[0] }} votos
-                    </span>
                 </li>
-                <li class="my-2">Precio: <span class="font-bold text-blue-900">${{ partido.precio }}</span></li>
-                <li class="my-2">Lugar: <span class="font-bold text-blue-900">{{ partido.lugar }}</span></li>
-                <li class="my-2">Horario: <span class="font-bold text-blue-900">{{ partido.fechaHoraFinalizacion }}</span></li>
-                <li class="my-2">Faltan <span class="font-bold text-blue-900">{{ partido.cuantosFaltan }}</span> jugadores</li>
-                <li class="my-2"><span class="font-bold text-blue-900">Cancha de {{ partido.tipoDeCancha }}</span></li>
-                <li class="my-2">Estado del anuncio: <span class="font-bold text-blue-900">{{ partido.estado }}</span></li>
-                <li class="my-2">Detalles: <p class="font-bold text-blue-900 whitespace-pre-line">{{ partido.detalles }}</p></li>
-                <li class="my-2">Calificación: <span class="font-bold text-blue-900">{{ calificacion['puntaje'] }}/10</span></li>
-                <li class="my-2">Cantidad de calificaciones: <span class="font-bold text-blue-900">{{ calificacion['cantidad'] }}</span></li>
+                <li class="my-2">
+                    <topico punto="Calificación como organizador" />
+                    {{ partido.calificacionOrganizador[0] }}/10 - {{ partido.calificacionOrganizador[1] }} votos
+                </li>
+                <li class="my-2">
+                    <topico punto="Precio" /> ${{ partido.precio }}
+                </li>
+                <li class="my-2">
+                    <topico punto="Lugar" /> {{ partido.lugar }}
+                </li>
+                <li class="my-2">
+                    <topico punto="Horario en que finaliza la busqueda" /> {{ partido.fechaHoraFinalizacion }}
+                </li>
+                <li class="my-2">
+                    <topico punto="Cantidad de jugadores necesarios" /> {{ partido.cuantosFaltan }}
+                </li>
+                <li class="my-2">
+                    <topico punto="Tipo de cancha" /> {{ partido.tipoDeCancha }}
+                </li>
+                <li class="my-2">
+                    <topico punto="Estado del anuncio" /> {{ partido.estado }}
+                </li>
+                <li class="my-2">
+                    <topico punto="Detalles" /> <p class="whitespace-pre-line">{{ partido.detalles }}</p>
+                </li>
+                <li class="my-2">
+                    <topico punto="Calificación" /> {{ calificacion['puntaje'] }}/10 - 
+                    <topico punto="Votos" /> {{ calificacion['cantidad'] }}
+                </li>
                 <li class="my-2">
                     <button type="button" @click="verCalificaciones()"
                         class="px-2.5 py-2.5 rounded-sm shadow-md bg-blue-600 text-white hover:bg-blue-800 hover:shadow-lg">
                         Ver calificaciones del partido
                     </button>
                 </li>
-                <li v-if="presentoPostulacion" class="my-2">Tu estado: <span class="font-bold text-blue-900">{{ postulacion.estado }}</span></li>
+                <li v-if="presentoPostulacion" class="my-2">
+                    <topico punto="Tu estado" />{{ postulacion.estado }}
+                </li>
                 <li v-if="partido.user_id != user_id && user_id != null " class="my-2">
                     <button v-if="presentoPostulacion == false && partido.estado == 'Buscando jugadores' " type="button" @click="quieroJugar()"
                         class="px-2.5 py-2.5 rounded-sm shadow-md bg-blue-600 text-white hover:bg-blue-800 hover:shadow-lg">
@@ -70,105 +88,45 @@
             <!-- Postulaciones -->
             <div v-if="mostrarPostulaciones" class="relative mt-6 mx-auto">
 
-                <button type="button" @click="openModal()" class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded my-3">Abrir filtros</button>
-                <div class="my-2 flex sm:flex-row flex-col">
-                    <div class="flex flex-row mb-1 sm:mb-0">
-                        <div class="fixed z-10 inset-0 overflow-y-auto ease-out duration-400" v-if="isOpen">
-                            <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                                
-                                <div class="fixed inset-0 transition-opacity">
-                                    <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
-                                </div>
-                                <!-- This element is to trick the browser into centering the modal contents. -->
-                                <span class="hidden sm:inline-block sm:align-middle sm:h-screen"></span>​
-                                <div class="px-4 py-2 inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
-                                    <estructura-input-vue nombreLabel="Calificación" class="my-2">
-                                        <template #inputComponente>
-                                            <select class="w-full rounded-md" v-model="formBuscador.calificacion">
-                                                <option disabled selected value="null">Seleccionar calificación</option>
-                                                <option value="5">5</option>
-                                                <option value="4">4 o más</option>
-                                                <option value="3">3 o más</option>
-                                                <option value="2">2 o más</option>
-                                                <option value="1">1 o más</option>
-                                                <option value="0">0 o más</option>
-                                            </select>
-                                        </template>
-                                    </estructura-input-vue>
-
-                                    <div class="grid grid-cols-2 gap-x-2">
-                                        <button @click="verPostulantes()" type="button" class="mt-2 inline-flex justify-center w-full rounded-md border px-4 py-2 border-gray-300 bg-green-300 hover:bg-green-400 text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5">
-                                            Aplicar
-                                        </button>
-                                        <button @click="closeModal()" type="button" class="mt-2 inline-flex justify-center w-full rounded-md border px-4 py-2 border-gray-300 bg-red-300 hover:bg-red-400 text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5">
-                                            Cerrar
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <div v-for="postulacion in postulaciones" :key="postulacion.id">
-                    <div class="my-3 bg-white shadow-md rounded-md p-4">
-                        <div class="text-sm grid grid-cols-2">
-                            <div class="flex space-x-2 font-semibold text-green-800">
-                                <span>
-                                    {{ postulacion.partidos }} partidos
-                                </span>
-                                <span>
-                                    -
-                                </span>
-                                <span>
-                                    Puntaje promedio: {{ postulacion.puntaje }}/10
-                                </span>
-                            </div>
-                        </div>
-                        
-                        <h1 class="text-3xl font-black mt-3">
+                    <listado-resultados>
+                        <template #cabecera>
+                            {{ postulacion.partidos }} partidos - Puntaje promedio: {{ postulacion.puntaje }}/10
+                        </template>
+
+                        <template #nombre>
                             <Link :href="route('perfil.mostrar', postulacion.nombreUsuario)" class="hover:underline cursor-pointer">
                                 {{ postulacion.nombre }}
                             </Link>
-                        </h1>
+                        </template>
 
-                        <div class="flex justify-end">
+                        <template #botones>
                             <button type="button" @click="actualizarPostulacion(postulacion.id, 'Esperando respuesta')"
                                 class="px-2.5 py-2.5 rounded-sm shadow-md bg-green-600 text-white hover:bg-green-800 hover:shadow-lg">
                                 Aceptar
                             </button>
-                        </div>
-                    </div>
+                        </template>
+                    </listado-resultados>
 
-                    <hr class="bg-gray-200 p-px">
+                    <hr class="bg-gray-300 p-px">
                 </div>
             </div>
 
             <!-- Postulantes aceptados -->
             <div v-if="mostrarPostulantesAceptados" class="relative mt-6 mx-auto">
                 <div v-for="postulanteAceptado in postulantesAceptados" :key="postulanteAceptado.id">
-                    <div class="my-3 bg-white shadow-md rounded-md p-4">
-                        <div class="text-sm grid grid-cols-2">
-                            <div class="flex space-x-2 font-semibold text-green-800">
-                                <span>
-                                    {{ postulanteAceptado.partidos }} partidos
-                                </span>
-                                <span>
-                                    -
-                                </span>
-                                <span>
-                                    Puntaje promedio: {{ postulanteAceptado.puntaje }}/10
-                                </span>
-                            </div>
-                        </div>
-                        
-                        <h1 class="text-3xl font-black mt-3">
+                    <listado-resultados>
+                        <template #cabecera>
+                            {{ postulanteAceptado.partidos }} partidos - Puntaje promedio: {{ postulanteAceptado.puntaje }}/10
+                        </template>
+
+                        <template #nombre>
                             <Link :href="route('perfil.mostrar', postulanteAceptado.nombreUsuario)" class="hover:underline cursor-pointer">
                                 {{ postulanteAceptado.nombre }}
                             </Link>
-                        </h1>
+                        </template>
 
-                        <div v-if="partido.user_id == user_id" class="flex space-x-2 justify-end">
+                        <template #botones>
                             <button type="button" @click="calificarPostulacion(postulanteAceptado.id)"
                                 class="px-2.5 py-2.5 rounded-sm shadow-md bg-indigo-600 text-white hover:bg-indigo-800 hover:shadow-lg">
                                 Calificar
@@ -178,10 +136,10 @@
                                 class="px-2.5 py-2.5 rounded-sm shadow-md bg-green-600 text-white hover:bg-green-800 hover:shadow-lg">
                                 Dejarlo en espera
                             </button>
-                        </div>
-                    </div>
+                        </template>
+                    </listado-resultados>
 
-                    <hr class="bg-gray-200 p-px">
+                    <hr class="bg-gray-300 p-px">
                 </div>
             </div>
         </div>
@@ -194,6 +152,8 @@
     import EstructuraInputVue from '@/Shared/Formulario/EstructuraInput.vue'
     import InputComponenteVue from '@/Shared/Formulario/InputComponente.vue'
     import { Link } from '@inertiajs/inertia-vue3';
+    import ListadoResultados from '@/Shared/Buscador/ListadoResultados.vue'
+    import Topico from '@/Shared/Listas/Topico.vue'
 
     export default defineComponent({
             components: {
@@ -201,6 +161,8 @@
             EstructuraInputVue,
             InputComponenteVue,
             Link,
+            ListadoResultados,
+            Topico,
         },
 
         props: {
@@ -213,7 +175,6 @@
 
         data() {
             return {
-                isOpen: false,
                 formBuscador: {
                     page: 1,
                     calificacion: null,
@@ -248,13 +209,6 @@
                 if (confirm('¿Estás seguro de que deseas eliminar tu postulación?')) {
                     this.$inertia.delete(this.route('postulaciones.destroy', [this.partido.slug, this.postulacion.id]))
                 }
-            },
-
-            openModal: function () {
-                this.isOpen = true;
-            },
-            closeModal: function () {
-                this.isOpen = false;
             },
 
             verPostulantes() {

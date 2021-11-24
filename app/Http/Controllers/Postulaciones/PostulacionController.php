@@ -22,7 +22,7 @@ class PostulacionController extends Controller
         $this->calificacionPostulacionService = $calificacionPostulacionService;
     }
 
-    public function index(Request $request, $slug)
+    public function index($slug)
     {
         $partido = Partido::where('slug', $slug)->first();
         $this->authorize('viewAny', [Postulacion::class, $partido]);

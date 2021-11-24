@@ -2,19 +2,15 @@
     <app-layout title="Perfil">
         <perfil-nav-componente :usuario="usuario" />
 
-        <h1 class="text-2xl my-3"><span class="font-bold">Celular</span>: {{ usuario.numero }}</h1>
+        <resumen-titulo titulo='Celular' :valor='usuario.numero' />
 
-        <hr class="bg-gray-300 p-px my-3">
+        <resumen-titulo titulo='Calificación como organizador' :valor='calificacionOrganizador[0]' />
 
-        <h1 class="text-2xl my-3"><span class="font-bold">Calificación como organizador</span>: {{ calificacionOrganizador[0] }}/10</h1>
-        <h1 class="text-2xl my-3"><span class="font-bold">Votos</span>: {{ calificacionOrganizador[1] }}</h1>
+        <resumen-titulo titulo='Cantidad de votos recibidos como organizador' :valor='calificacionOrganizador[1]' />
 
-        <hr class="bg-gray-300 p-px my-3">
+        <resumen-titulo titulo='Calificación como jugador' :valor='calificacionJugador[0]' />
 
-        <h1 class="text-2xl my-3"><span class="font-bold">Calificación como jugador</span>: {{ calificacionJugador[0] }}/10</h1>
-        <h1 class="text-2xl my-3"><span class="font-bold">Votos</span>: {{ calificacionJugador[1] }}</h1>
-
-        <hr class="bg-gray-300 p-px my-3">
+        <resumen-titulo titulo='Cantidad de votos recibidos como jugador' :valor='calificacionJugador[1]' />
     </app-layout>
 </template>
 
@@ -23,12 +19,14 @@
     import AppLayout from '@/Layouts/AppLayout.vue'
     import { Link } from '@inertiajs/inertia-vue3';
     import PerfilNavComponente from '@/Shared/Perfil/PerfilNavComponente.vue';
+    import ResumenTitulo from '@/Shared/Perfil/ResumenTitulo.vue';
 
     export default defineComponent({
         components: {
             AppLayout,
             Link,
             PerfilNavComponente,
+            ResumenTitulo,
         },
 
         props: {

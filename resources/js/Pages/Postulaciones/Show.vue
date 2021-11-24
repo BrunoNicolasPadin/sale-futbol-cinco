@@ -4,32 +4,33 @@
         <div class="my-3 text-3xl">
             <Link :href="route('partidos.show', partido.slug)" class="hover:underline">
                 {{ partido.nombre }}
-            </Link> / {{ postulacion.user.name }}
+            </Link> / Postulación de {{ postulacion.user.name }}
         </div>
 
-        <hr class="bg-gray-200 p-px">
+        <hr class="bg-gray-300 p-px">
 
-        <div v-if="postulacion.puntaje != null && mostrarCajaParaCalificar == false " class="my-2">
-            <h2 class="uppercase text-xl font-semibold text-gray-700 my-2">Calificación: {{ postulacion.puntaje }}</h2>
-            <div v-if="postulacion.comentario">
-                <h2 class="uppercase text-xl font-semibold text-gray-700 my-2">Comentario:</h2>
-                <p class="whitespace-pre-line">{{ postulacion.comentario }}</p>
-            </div>
+        <listado-calificaciones v-if="postulacion.puntaje != null && mostrarCajaParaCalificar == false " :comentario='postulacion.comentario'
+            :user_id='user_id' :objeto='partido'>
+            <template #titulo-cabecera>
+                Calificación
+            </template>
 
-            <div v-if="user_id == partido.user_id " class="my-6">
-                <div class="flex justify-end">
-                    <button type="button" @click="editarCalificacion()" 
-                        class="mr-2 focus:outline-none text-white font-bold text-sm py-0.5 px-4 rounded-full bg-yellow-500 hover:bg-yellow-600 hover:shadow-lg">
-                            Editar
-                    </button>
+            <template #calificacion-cabecera>
+                {{ postulacion.puntaje }}/10
+            </template>
 
-                    <button type="button" @click="eliminarCalificacion()" 
-                        class="focus:outline-none text-white font-bold text-sm py-0.5 px-4 rounded-full bg-red-500 hover:bg-red-600 hover:shadow-lg">
-                            Eliminar
-                    </button>
-                </div>
-            </div>
-        </div>
+            <template #botones>
+                <button type="button" @click="editarCalificacion()" 
+                    class="mr-2 focus:outline-none text-white font-bold text-base py-2 px-4 bg-yellow-500 hover:bg-yellow-600 hover:shadow-lg">
+                        Editar
+                </button>
+
+                <button type="button" @click="eliminarCalificacion()" 
+                    class="focus:outline-none text-white font-bold text-base py-2 px-4 bg-red-500 hover:bg-red-600 hover:shadow-lg">
+                        Eliminar
+                </button>
+            </template>
+        </listado-calificaciones>
 
         <div v-else class="my-6">
             <h2 class="uppercase text-xl font-semibold text-gray-700 my-2">Calificar postulante</h2>
@@ -68,6 +69,7 @@
     import InputComponenteVue from '@/Shared/Formulario/InputComponente.vue'
     import Guardar from '@/Shared/Botones/Guardar'
     import { Link } from '@inertiajs/inertia-vue3';
+    import ListadoCalificaciones from '@/Shared/Calificaciones/ListadoCalificaciones.vue'
 
     export default defineComponent({
         components: {
@@ -77,6 +79,7 @@
             InputComponenteVue,
             Guardar,
             Link,
+            ListadoCalificaciones,
         },
 
         props: {

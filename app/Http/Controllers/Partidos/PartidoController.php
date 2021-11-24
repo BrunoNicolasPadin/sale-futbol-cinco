@@ -58,6 +58,8 @@ class PartidoController extends Controller
                         $partido->fechaHoraFinalizacion
                     )->format('d/m/y - H:i:s'),
                     'user' => $partido->user,
+                    'calificacion' => $this->calificacionPartidoService
+                        ->obtenerCalificaciones($partido->id),
                 ];
             });
     }

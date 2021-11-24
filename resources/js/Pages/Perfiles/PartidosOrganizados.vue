@@ -2,122 +2,110 @@
     <app-layout title="Perfil">
         <perfil-nav-componente :usuario="usuario" />
 
-        <h1 class="text-3xl font-bold my-3">Partidos organizados</h1>
+        <titulo-listado titulo='Partidos organizados' />
 
         <div class="relative mt-6 mx-auto">
-            <input 
-                class="w-full border rounded-md pl-10 pr-4 py-2 focus:border-blue-500 focus:outline-none focus:shadow-outline" 
-                type="text" 
-                placeholder="Buscar partidos"
-                v-model="formBuscador.nombre"
-                @keyup="buscar()">
+            <input-buscador @escribir="buscar" v-model="formBuscador.nombre" />
 
-            <button type="button" @click="openModal()" class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded my-3">Abrir filtros</button>
-            <div class="my-2 flex sm:flex-row flex-col">
-                <div class="flex flex-row mb-1 sm:mb-0">
-                    <div class="fixed z-10 inset-0 overflow-y-auto ease-out duration-400" v-if="isOpen">
-                        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                            
-                            <div class="fixed inset-0 transition-opacity">
-                                <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
-                            </div>
-                            <!-- This element is to trick the browser into centering the modal contents. -->
-                            <span class="hidden sm:inline-block sm:align-middle sm:h-screen"></span>​
-                            <div class="px-4 py-2 inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
-                                <estructura-input-vue nombreLabel="Tipo de cancha" class="my-2">
-                                    <template #inputComponente>
-                                        <select class="w-full rounded-md" v-model="formBuscador.tipoDeCancha">
-                                            <option disabled selected value="">Seleccionar tipo de cancha</option>
-                                            <option value="5">5</option>
-                                            <option value="7">7</option>
-                                            <option value="9">9</option>
-                                            <option value="11">11</option>
-                                        </select>
-                                    </template>
-                                </estructura-input-vue>
+            <filtro-componente @aplicarFiltros="buscar">
+                <template #filtros>
+                    <estructura-input-vue nombreLabel="Tipo de cancha" class="my-2">
+                        <template #inputComponente>
+                            <select class="w-full rounded-md" v-model="formBuscador.tipoDeCancha">
+                                <option disabled selected value="">Seleccionar tipo de cancha</option>
+                                <option value="5">5</option>
+                                <option value="7">7</option>
+                                <option value="9">9</option>
+                                <option value="11">11</option>
+                            </select>
+                        </template>
+                    </estructura-input-vue>
 
-                                <estructura-input-vue nombreLabel="Estado" class="my-2">
-                                    <template #inputComponente>
-                                        <select class="w-full rounded-md" v-model="formBuscador.estado">
-                                            <option disabled selected value="">Seleccionar tipo de estado</option>
-                                            <option value="Buscando jugadores">Buscando jugadores</option>
-                                            <option value="Busqueda finalizada">Búsqueda finalizada</option>
-                                        </select>
-                                    </template>
-                                </estructura-input-vue>
+                    <estructura-input-vue nombreLabel="Estado" class="my-2">
+                        <template #inputComponente>
+                            <select class="w-full rounded-md" v-model="formBuscador.estado">
+                                <option disabled selected value="">Seleccionar tipo de estado</option>
+                                <option value="Buscando jugadores">Buscando jugadores</option>
+                                <option value="Busqueda finalizada">Búsqueda finalizada</option>
+                            </select>
+                        </template>
+                    </estructura-input-vue>
 
-                                <estructura-input-vue nombreLabel="Cantidad de jugadores que necesitan">
-                                    <template #inputComponente>
-                                        <input-componente-vue type="number" v-model="formBuscador.cuantosFaltan"/>
-                                    </template>
-                                </estructura-input-vue>
+                    <estructura-input-vue nombreLabel="Cantidad de jugadores que necesitan">
+                        <template #inputComponente>
+                            <input-componente-vue type="number" v-model="formBuscador.cuantosFaltan"/>
+                        </template>
+                    </estructura-input-vue>
 
-                                <estructura-input-vue nombreLabel="Fecha y hora. Formato: DD-MM-AAAA HH:MM:SS">
-                                    <template #inputComponente>
-                                        <input-componente-vue type="text" v-model="formBuscador.fechaHora"/>
-                                    </template>
-                                </estructura-input-vue>
+                    <estructura-input-vue nombreLabel="Fecha y hora. Formato: DD-MM-AAAA HH:MM:SS">
+                        <template #inputComponente>
+                            <input-componente-vue type="text" v-model="formBuscador.fechaHora"/>
+                        </template>
+                    </estructura-input-vue>
+                </template>
+            </filtro-componente>
 
-                                <div class="grid grid-cols-2 gap-x-2">
-                                    <button @click="buscar()" type="button" class="mt-2 inline-flex justify-center w-full rounded-md border px-4 py-2 border-gray-300 bg-green-300 hover:bg-green-400 text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5">
-                                        Aplicar
-                                    </button>
-                                    <button @click="closeModal()" type="button" class="mt-2 inline-flex justify-center w-full rounded-md border px-4 py-2 border-gray-300 bg-red-300 hover:bg-red-400 text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5">
-                                        Cerrar
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <hr class="bg-gray-300 p-px my-2">
 
             <div v-for="partido in partidosFiltrados.data" :key="partido.id">
-                <div class="my-3 bg-white shadow-md rounded-md p-4">
-                    <div class="text-base">
-                        <span class="font-semibold text-green-800">
-                            <Link :href="route('perfil.mostrar', partido.user.nombreUsuario)" class="hover:underline">
-                                {{ partido.user.name }}
-                            </Link>
-                        </span>
-                    </div>
-                    
-                    <h1 class="text-2xl font-black mt-3">
+                <listado-resultados>
+                    <template #cabecera>
+                        <Link :href="route('perfil.mostrar', partido.user.nombreUsuario)" class="hover:underline">
+                            {{ partido.user.name }}
+                        </Link>
+                    </template>
+
+                    <template #nombre>
                         <Link :href="route('partidos.show', partido.slug)" class="hover:underline">
                             {{ partido.nombre }}
                         </Link>
-                    </h1>
+                    </template>
 
-                    <div class="text-base">
-                        <div class="flex flex-wrap space-x-2">
-                            <div class="text-blue-900 rounded-full bg-blue-50 border border-blue-200 p-2 mt-6">
+                    <template #opciones>
+                        <detalles-resultado>
+                            <template #contenido>
                                 {{ partido.cuantosFaltan }} jugadores
-                            </div>
-                            <div class="text-blue-900 rounded-full bg-blue-50 border border-blue-200 p-2 mt-6">
+                            </template>
+                        </detalles-resultado>
+
+                        <detalles-resultado>
+                            <template #contenido>
                                 ${{ partido.precio }}
-                            </div>
-                            <div class="text-blue-900 rounded-full bg-blue-50 border border-blue-200 p-2 mt-6">
+                            </template>
+                        </detalles-resultado>
+
+                        <detalles-resultado>
+                            <template #contenido>
                                 Cancha de {{ partido.tipoDeCancha }}
-                            </div>
-                            <div class="text-blue-900 rounded-full bg-blue-50 border border-blue-200 p-2 mt-6">
+                            </template>
+                        </detalles-resultado>
+
+                        <detalles-resultado>
+                            <template #contenido>
                                 {{ partido.fechaHoraFinalizacion }}
-                            </div>
-                            <div v-if="partido.estado == 'Buscando jugadores' " 
-                                class="text-blue-900 rounded-full bg-blue-50 border border-blue-200 p-2 mt-6">
+                            </template>
+                        </detalles-resultado>
+
+                        <detalles-resultado v-if="partido.estado == 'Buscando jugadores' ">
+                            <template #contenido>
                                 {{ partido.estado }}
-                            </div>
-                            <div v-else 
-                                class="text-white rounded-full bg-red-700 border border-red-200 p-2 mt-6">
-                                {{ partido.estado }}
-                            </div>
+                            </template>
+                        </detalles-resultado>
+
+                        <div v-else 
+                            class="text-white rounded-full bg-red-700 border border-red-200 p-2 mt-6">
+                            {{ partido.estado }}
                         </div>
-                    </div>
+                    </template>
 
-                    <hr class="bg-gray-100 p-px my-3">
-
-                    <h1><span class="font-bold">Calificación</span>: {{ partido.calificacion.puntaje }}/10 - 
-                    <span class="font-bold">Votos</span>: {{ partido.calificacion.cantidad }}</h1>
-                </div>
+                    <template #calificaciones>
+                        <hr class="bg-gray-100 p-px my-3">
+                        <h1>
+                            <span class="font-bold">Calificación</span>: {{ partido.calificacion.puntaje }}/10 - 
+                            <span class="font-bold">Votos</span>: {{ partido.calificacion.cantidad }}
+                        </h1>
+                    </template>
+                </listado-resultados>
 
                 <hr class="bg-gray-300 p-px">
             </div>
@@ -139,6 +127,11 @@
     import EstructuraInputVue from '@/Shared/Formulario/EstructuraInput.vue'
     import InputComponenteVue from '@/Shared/Formulario/InputComponente.vue'
     import PerfilNavComponente from '@/Shared/Perfil/PerfilNavComponente.vue';
+    import InputBuscador from '@/Shared/Buscador/InputBuscador'
+    import FiltroComponente from '@/Shared/Buscador/FiltroComponente'
+    import ListadoResultados from '@/Shared/Buscador/ListadoResultados'
+    import DetallesResultado from '@/Shared/Buscador/DetallesResultado'
+    import TituloListado from '@/Shared/Perfil/TituloListado.vue';
 
     export default defineComponent({
         components: {
@@ -147,6 +140,11 @@
             EstructuraInputVue,
             InputComponenteVue,
             PerfilNavComponente,
+            InputBuscador,
+            FiltroComponente,
+            ListadoResultados,
+            DetallesResultado,
+            TituloListado,
         },
 
         props: {
@@ -157,7 +155,6 @@
         data() {
             return {
                 showMenu: false,
-                isOpen: false,
                 partidosFiltrados: this.partidos,
                 formBuscador: {
                     page: 1,
@@ -173,14 +170,6 @@
         methods: {
             toggleNavbar: function(){
                 this.showMenu = !this.showMenu;
-            },
-
-            openModal: function () {
-                this.isOpen = true;
-            },
-
-            closeModal: function () {
-                this.isOpen = false;
             },
 
             buscar() {

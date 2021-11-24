@@ -7,34 +7,34 @@
             </Link> / Calificaciones
         </div>
 
-        <hr class="bg-gray-200 p-px">
+        <hr class="bg-gray-300 p-px">
 
         <div v-for="calificacion in calificaciones" :key="calificacion.id">
-            <h2 class="text-3xl font-bold my-2 text-gray-700">
-                <Link :href="route('perfil.mostrar', calificacion.user.nombreUsuario)" class="hover:underline">
-                    {{ calificacion.user.name }}
-                </Link> - {{ calificacion.puntaje }}/10 puntos
-            </h2>
-            <div v-if="calificacion.comentario">
-                <h2 class="uppercase text-xl font-semibold text-gray-700 my-2">Comentario:</h2>
-                <p class="whitespace-pre-line">{{ calificacion.comentario }}</p>
-            </div>
 
-            <div v-if="user_id == calificacion.user_id " class="my-6">
-                <div class="flex justify-end">
+            <listado-calificaciones :comentario='calificacion.comentario' :user_id='user_id' :objeto='calificacion'>
+                <template #titulo-cabecera>
+                    <Link :href="route('perfil.mostrar', calificacion.user.nombreUsuario)" class="hover:underline">
+                        {{ calificacion.user.name }}
+                    </Link> - Calificación
+                </template>
+
+                <template #calificacion-cabecera>
+                    {{ calificacion.puntaje }}/10
+                </template>
+
+                <template #botones>
                     <button type="button" @click="editarCalificacion(calificacion)" 
-                        class="mr-2 focus:outline-none text-white font-bold text-sm py-0.5 px-4 rounded-full bg-yellow-500 hover:bg-yellow-600 hover:shadow-lg">
+                        class="mr-2 focus:outline-none text-white font-bold text-base py-2 px-4 bg-yellow-500 hover:bg-yellow-600 hover:shadow-lg">
                             Editar
                     </button>
 
-                    <button type="button" @click="eliminarCalificacion(calificacion.id)" 
-                        class="focus:outline-none text-white font-bold text-sm py-0.5 px-4 rounded-full bg-red-500 hover:bg-red-600 hover:shadow-lg">
+                    <button type="button" @click="eliminarCalificacion(calificacion)" 
+                        class="focus:outline-none text-white font-bold text-base py-2 px-4 bg-red-500 hover:bg-red-600 hover:shadow-lg">
                             Eliminar
                     </button>
-                </div>
-            </div>
+                </template>
+            </listado-calificaciones>
 
-            <hr class="bg-blue-800 p-px my-3">
         </div>
 
         <div v-if="postulacion != null && mostrarCajaParaCalificar == true " class="my-3">
@@ -80,6 +80,7 @@
     import InputComponenteVue from '@/Shared/Formulario/InputComponente.vue'
     import Guardar from '@/Shared/Botones/Guardar'
     import { Link } from '@inertiajs/inertia-vue3';
+    import ListadoCalificaciones from '@/Shared/Calificaciones/ListadoCalificaciones.vue'
 
     export default defineComponent({
         components: {
@@ -89,6 +90,7 @@
             InputComponenteVue,
             Guardar,
             Link,
+            ListadoCalificaciones,
         },
 
         props: {

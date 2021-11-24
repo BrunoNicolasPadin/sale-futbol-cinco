@@ -52,6 +52,8 @@ class Partido extends Model
                 $fechaHora
             )->format('Y-m-d H:i:s');
             $query->whereDate('fechaHoraFinalizacion', '>', $fechaHora);
+        })->when($request->user_id, function ($query, $user_id) {
+            $query->where('user_id', $user_id);
         });
     }
 }

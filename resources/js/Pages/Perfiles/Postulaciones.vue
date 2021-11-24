@@ -2,63 +2,78 @@
     <app-layout title="Perfil">
         <perfil-nav-componente :usuario="usuario" />
 
-        <h1 class="text-3xl font-bold my-3">
-            <span v-if="postulacionesAceptadas">Postulaciones aceptadas</span>
-            <span v-else>Postulaciones en espera</span>
-        </h1>
+        <titulo-listado v-if="postulacionesAceptadas" titulo='Postulaciones aceptadas' />
+        <titulo-listado v-else titulo='Postulaciones en espera' />
+
+        <hr class="bg-gray-300 p-px my-3">
 
         <div v-for="partido in partidosFiltrados.data" :key="partido.id">
-            <div class="my-3 bg-white shadow-md rounded-md p-4">
-                <div class="text-base">
-                    <span class="font-semibold text-green-800">
-                        <Link :href="route('perfil.mostrar', partido.user.nombreUsuario)" class="hover:underline">
-                            {{ partido.user.name }}
-                        </Link>
-                    </span>
-                </div>
-                
-                <h1 class="text-2xl font-black mt-3">
+            <listado-resultados>
+                <template #cabecera>
+                    <Link :href="route('perfil.mostrar', partido.user.nombreUsuario)" class="hover:underline">
+                        {{ partido.user.name }}
+                    </Link>
+                </template>
+
+                <template #nombre>
                     <Link :href="route('partidos.show', partido.slug)" class="hover:underline">
                         {{ partido.nombre }}
                     </Link>
-                </h1>
+                </template>
 
-                <div class="text-base">
-                    <div class="flex flex-wrap space-x-2">
-                        <div class="text-blue-900 rounded-full bg-blue-50 border border-blue-200 p-2 mt-6">
+                <template #opciones>
+                    <detalles-resultado>
+                        <template #contenido>
                             {{ partido.cuantosFaltan }} jugadores
-                        </div>
-                        <div class="text-blue-900 rounded-full bg-blue-50 border border-blue-200 p-2 mt-6">
+                        </template>
+                    </detalles-resultado>
+
+                    <detalles-resultado>
+                        <template #contenido>
                             ${{ partido.precio }}
-                        </div>
-                        <div class="text-blue-900 rounded-full bg-blue-50 border border-blue-200 p-2 mt-6">
+                        </template>
+                    </detalles-resultado>
+
+                    <detalles-resultado>
+                        <template #contenido>
                             Cancha de {{ partido.tipoDeCancha }}
-                        </div>
-                        <div class="text-blue-900 rounded-full bg-blue-50 border border-blue-200 p-2 mt-6">
+                        </template>
+                    </detalles-resultado>
+
+                    <detalles-resultado>
+                        <template #contenido>
                             {{ partido.fechaHoraFinalizacion }}
-                        </div>
-                        <div v-if="partido.estado == 'Buscando jugadores' " 
-                            class="text-blue-900 rounded-full bg-blue-50 border border-blue-200 p-2 mt-6">
+                        </template>
+                    </detalles-resultado>
+
+                    <detalles-resultado v-if="partido.estado == 'Buscando jugadores' ">
+                        <template #contenido>
                             {{ partido.estado }}
-                        </div>
-                        <div v-else 
-                            class="text-white rounded-full bg-red-700 border border-red-200 p-2 mt-6">
-                            {{ partido.estado }}
-                        </div>
+                        </template>
+                    </detalles-resultado>
+
+                    <div v-else 
+                        class="text-white rounded-full bg-red-700 border border-red-200 p-2 mt-6">
+                        {{ partido.estado }}
                     </div>
-                </div>
+                </template>
 
-                <hr class="bg-gray-100 p-px my-3">
+                <template #calificaciones>
+                    <hr class="bg-gray-100 p-px my-3">
 
-                <h1 v-if="partido.puntajeRecibido"><span class="font-bold">Puntaje recibido</span>: {{ partido.puntajeRecibido }}/10</h1>
-                <h1 v-else>Aún no recibió puntaje su postulación</h1>
+                    <h1 v-if="partido.puntajeRecibido">
+                        <span class="font-bold">Puntaje recibido</span>: {{ partido.puntajeRecibido }}/10
+                    </h1>
+                    <h1 v-else>Aún no recibió puntaje su postulación</h1>
 
-                <hr class="bg-gray-100 p-px my-3">
+                    <hr class="bg-gray-100 p-px my-3">
 
-                <h1 v-if="partido.puntajeDado"><span class="font-bold">Puntaje al partido dado por {{ usuario.name }}</span>: 
-                {{ partido.puntajeDado.puntaje }}/10</h1>
-                <h1 v-else>Aún no calificó el partido</h1>
-            </div>
+                    <h1 v-if="partido.puntajeDado">
+                        <span class="font-bold">Puntaje al partido dado por {{ usuario.name }}</span>: {{ partido.puntajeDado.puntaje }}/10
+                    </h1>
+                    <h1 v-else>Aún no calificó el partido</h1>
+                </template>
+            </listado-resultados>
 
             <hr class="bg-gray-300 p-px">
         </div>
@@ -79,6 +94,9 @@
     import EstructuraInputVue from '@/Shared/Formulario/EstructuraInput.vue'
     import InputComponenteVue from '@/Shared/Formulario/InputComponente.vue'
     import PerfilNavComponente from '@/Shared/Perfil/PerfilNavComponente.vue';
+    import ListadoResultados from '@/Shared/Buscador/ListadoResultados'
+    import DetallesResultado from '@/Shared/Buscador/DetallesResultado'
+    import TituloListado from '@/Shared/Perfil/TituloListado.vue';
 
     export default defineComponent({
         components: {
@@ -86,7 +104,10 @@
             Link,
             EstructuraInputVue,
             InputComponenteVue,
-            PerfilNavComponente
+            PerfilNavComponente,
+            ListadoResultados,
+            DetallesResultado,
+            TituloListado,
         },
 
         props: {
