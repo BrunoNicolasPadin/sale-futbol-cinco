@@ -31,7 +31,7 @@
                                 <estructura-input-vue nombreLabel="Tipo de cancha" class="my-2">
                                     <template #inputComponente>
                                         <select class="w-full rounded-md" v-model="formBuscador.tipoDeCancha">
-                                            <option disabled selected value="null">Seleccionar tipo de cancha</option>
+                                            <option disabled selected value="">Seleccionar tipo de cancha</option>
                                             <option value="5">5</option>
                                             <option value="7">7</option>
                                             <option value="9">9</option>
@@ -40,9 +40,25 @@
                                     </template>
                                 </estructura-input-vue>
 
+                                <estructura-input-vue nombreLabel="Estado" class="my-2">
+                                    <template #inputComponente>
+                                        <select class="w-full rounded-md" v-model="formBuscador.estado">
+                                            <option disabled selected value="">Seleccionar tipo de estado</option>
+                                            <option value="Buscando jugadores">Buscando jugadores</option>
+                                            <option value="Busqueda finalizada">Búsqueda finalizada</option>
+                                        </select>
+                                    </template>
+                                </estructura-input-vue>
+
                                 <estructura-input-vue nombreLabel="Cantidad de jugadores que necesitan">
                                     <template #inputComponente>
-                                        <input-componente-vue type="text" v-model="formBuscador.cuantosFaltan"/>
+                                        <input-componente-vue type="number" v-model="formBuscador.cuantosFaltan"/>
+                                    </template>
+                                </estructura-input-vue>
+
+                                <estructura-input-vue nombreLabel="Fecha y hora. Formato: DD-MM-AAAA HH:MM:SS">
+                                    <template #inputComponente>
+                                        <input-componente-vue type="text" v-model="formBuscador.fechaHora"/>
                                     </template>
                                 </estructura-input-vue>
 
@@ -142,7 +158,8 @@
                     nombre: null,
                     tipoDeCancha: '',
                     cuantosFaltan: null,
-
+                    estado: '',
+                    fechaHora: null,
                 },
             }
         },

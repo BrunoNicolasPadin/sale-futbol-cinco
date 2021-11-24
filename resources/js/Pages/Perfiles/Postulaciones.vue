@@ -52,6 +52,12 @@
 
                 <h1 v-if="partido.puntajeRecibido"><span class="font-bold">Puntaje recibido</span>: {{ partido.puntajeRecibido }}/10</h1>
                 <h1 v-else>Aún no recibió puntaje su postulación</h1>
+
+                <hr class="bg-gray-100 p-px my-3">
+
+                <h1 v-if="partido.puntajeDado"><span class="font-bold">Puntaje al partido dado por {{ usuario.name }}</span>: 
+                {{ partido.puntajeDado.puntaje }}/10</h1>
+                <h1 v-else>Aún no calificó el partido</h1>
             </div>
 
             <hr class="bg-gray-300 p-px">

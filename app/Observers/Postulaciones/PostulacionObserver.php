@@ -2,6 +2,7 @@
 
 namespace App\Observers\Postulaciones;
 
+use App\Models\Partidos\CalificacionPartido;
 use App\Models\Partidos\Partido;
 use App\Models\Postulaciones\Postulacion;
 use App\Models\User;
@@ -34,6 +35,9 @@ class PostulacionObserver
     {
         $user = User::findOrFail($postulacion->user_id);
         $partido = Partido::findOrFail($postulacion->partido_id);
+        CalificacionPartido::where('partido_id', $partido->id)
+            ->where('user_id', $user->id)
+            ->delete();
         $user->notify(new PostulacionEliminada($partido));
     }
 }

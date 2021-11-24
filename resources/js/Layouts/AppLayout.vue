@@ -25,6 +25,9 @@
                                 <jet-nav-link :href="route('partidos.index')" :active="route().current('partidos.index')">
                                     Partidos
                                 </jet-nav-link>
+                                <jet-nav-link :href="route('notificaciones.listar')" :active="route().current('notificaciones.listar')">
+                                    Notificaciones
+                                </jet-nav-link>
                             </div>
                         </div>
 
@@ -154,6 +157,9 @@
                         </jet-responsive-nav-link>
                         <jet-responsive-nav-link :href="route('partidos.index')" :active="route().current('partidos.index')">
                             Partidos
+                        </jet-responsive-nav-link>
+                        <jet-responsive-nav-link :href="route('notificaciones.listar')" :active="route().current('notificaciones.listar')">
+                            Notificaciones
                         </jet-responsive-nav-link>
                     </div>
 

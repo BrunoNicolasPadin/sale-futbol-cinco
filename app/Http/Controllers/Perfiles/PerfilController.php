@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Usuarios;
+namespace App\Http\Controllers\Perfiles;
 
 use App\Http\Controllers\Controller;
+use App\Models\Partidos\CalificacionPartido;
 use App\Models\Partidos\Partido;
 use App\Models\Postulaciones\Postulacion;
 use App\Models\User;
@@ -125,6 +126,13 @@ class PerfilController extends Controller
                     )->format('d/m/y - H:i:s'),
                     'user' => $postulacion->partido->user,
                     'puntajeRecibido' => $postulacion->puntaje,
+                    'puntajeDado' => CalificacionPartido::select('puntaje')
+                        ->where(
+                            'partido_id',
+                            $postulacion->partido->id
+                        )
+                        ->where('user_id', $postulacion->user_id)
+                        ->first(),
                 ];
             });
     }

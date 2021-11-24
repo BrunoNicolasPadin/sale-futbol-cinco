@@ -4,6 +4,7 @@ namespace App\Models\Partidos;
 
 use App\Models\User;
 use App\Traits\Uuids;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -46,6 +47,11 @@ class Partido extends Model
             $query->where('user_id', $user_id);
         })->when($request->estado, function ($query, $estado) {
             $query->where('estado', $estado);
+        })->when($request->fechaHora, function ($query, $fechaHora) {
+            $fechaHora = Carbon::parse(
+                $fechaHora
+            )->format('Y-m-d H:i:s');
+            $query->whereDate('fechaHoraFinalizacion', '>', $fechaHora);
         });
     }
 }
